@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+
+# Skill runtime output
+.readme-architect/
+
+# OS
+.DS_Store
