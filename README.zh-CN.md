@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0B1221" alt="Python" />
   <img src="https://img.shields.io/badge/Agent%20Skill-Qoder%20%26%20Claude-4F46E5?style=for-the-badge&labelColor=0B1221" alt="Agent Skill" />
   <img src="https://img.shields.io/badge/Output-EN%20%2B%20ZH-38BDF8?style=for-the-badge&labelColor=0B1221" alt="双语输出" />
+  <img src="https://img.shields.io/badge/Runs%20on-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-38BDF8?style=for-the-badge&labelColor=0B1221" alt="跨平台" />
 </p>
 
 <p>
@@ -29,8 +30,26 @@
 
 > [!NOTE]
 > **有意思的是：** 这份 README 正是由该技能自己生成的 —— 它把自己识别为一个开发者工具，赋予其
-> *蓝图（blueprint）* 设计语言，并配上一张生成的主视觉横幅和一张工作流程图。这就是技能"自己吃自己的
-> 狗粮"。🐕
+> *蓝图（blueprint）* 设计语言，并配上一张生成的主视觉横幅和一张真正的 **draw.io** 架构图。
+> 这就是技能“自己吃自己的狗粮”。🐕
+
+<table>
+<tr><td>
+
+**一眼概览**
+
+</td><td>
+
+| | |
+|---|---|
+| **类型** | Agent Skill（开发者工具） |
+| **语言** | Python 3.8+ · 仅标准库 |
+| **产物** | `README.md`（英）+ `README.zh-CN.md`（中） |
+| **运行于** | macOS · Linux · Windows |
+| **依赖** | 无强制依赖 —— 视觉技能均为可选 |
+
+</td></tr>
+</table>
 
 <details>
 <summary>📑 目录 · Table of Contents</summary>
@@ -38,6 +57,7 @@
 - [✨ 简介](#about)
 - [🎯 特性](#features)
 - [⚙️ 工作原理](#how-it-works)
+- [🏗️ 架构](#architecture)
 - [🧩 项目类型（Archetype）](#archetypes)
 - [🎨 个性化装饰工具箱](#personalization)
 - [🖼️ 视觉联动](#visuals)
@@ -80,8 +100,10 @@
 - 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
   配图生成提示词。
 - 🌐 **默认双语** —— 平行的 `README.md`（英文）+ `README.zh-CN.md`（中文），每份顶部都有语言切换。
-- 🖼️ **可选 AI 视觉** —— 架构/流程图与 AI 生成横幅，联动 `drawio`、`nano-banana-pro` 与
-  `generate-gpt-image-2` 技能，并具备优雅降级。
+- 🖼️ **可选 AI 视觉** —— 架构/流程图与 AI 生成横幅，联动 `drawio`、`nano-banana-pro` →
+  `nano-banana-flash` → `generate-gpt-image-2` 链路，每一级都具备优雅降级（最终降到原生 Mermaid 图）。
+- 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
+  换到别人的环境、用别的 API 密钥照样跑通。
 - 🧰 **9 项装饰工具箱** —— 徽章、对齐 HTML 块、分割线、恰当的 emoji、可折叠 `<details>`、表格、
   动态数据卡片、`> [!NOTE]` 提示块以及锚点导航。
 - ✅ **内置校验器** —— 检查锚点可解析、本地资源存在、无模板占位符残留。
@@ -106,6 +128,25 @@ flowchart LR
 
 项目类型决定**骨架**，项目自身的设计语言决定**皮肤**。正是这种分离，让每份 README 都显得量身定制，而非
 套模板。
+
+<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
+
+<a id="architecture"></a>
+
+## 🏗️ 架构
+
+一个纯标准库编排器驱动整条流水线，读取内置的 references/templates，并**仅在探测到时**才调用伴生技能
+（每个都有优雅降级），最终产出中英两份 README。
+
+<div align="center">
+
+<img src="assets/readme/architecture.png" alt="README Architect 架构：代码库 → SKILL.md 编排器（分析 / 集成探测 / 校验脚本 + 参考文件 + 设计语言）→ 带降级的伴生技能 → 中英双 README" width="100%" />
+
+</div>
+
+> [!TIP]
+> 这张图本身就是技能在本机上用 **draw.io** 导出的。当未安装 draw.io 时，同样的逻辑会改用原生
+> Mermaid 块渲染 —— 无需任何二进制依赖。
 
 <p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
 
@@ -145,13 +186,12 @@ flowchart LR
 
 | 资产 | 工具 | 何时生成 |
 |------|------|----------|
-| 架构 / 流程 / 时序图 | [`drawio`](https://www.drawio.com) | 多组件系统、流水线 |
-| 横幅 / logo / 插图 | [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → 备选 [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | 品牌感强、且尚无横幅 |
+| 架构 / 流程 / 时序图 | [`drawio`](https://www.drawio.com) → 原生 **Mermaid** 兜底 | 多组件系统、流水线 |
+| 横幅 / logo / 插图 | [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | 品牌感强、且尚无横幅 |
 
 > [!WARNING]
 > 技能**绝不伪造产品截图或虚假指标。** 只有当仓库里已存在真实截图时才使用；图像生成仅限于横幅、logo 与
-> 抽象插画。若生成器或其凭据不可用，README 会优雅降级并记录省略 —— 就像本次，架构图降级为原生 Mermaid
-> 流程图。
+> 抽象插画。若生成器或其凭据不可用，README 会沿链路优雅降级（图表降到原生 Mermaid），并始终标注任何省略。
 
 <a id="structure"></a>
 
@@ -172,8 +212,9 @@ readme-architect/
 ├── templates/                  # 各项目类型的 README 骨架
 ├── scripts/
 │   ├── analyze_project.py      # 仓库 → profile.json（纯标准库）
+│   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
 │   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
-└── assets/readme/              # 生成的横幅与视觉资产
+└── assets/readme/              # 生成的横幅与架构图
 ```
 
 </details>
@@ -231,8 +272,11 @@ python3 scripts/validate_readme.py README.md
 ## 📋 环境要求
 
 - **Python 3.8+** —— 分析器与校验器只用标准库（无需 `pip install`）。
-- **可选：** `drawio`、`nano-banana-pro` 或 `generate-gpt-image-2` 技能用于视觉。没有它们，README 依然
-  能正常渲染。
+- **可选：** `drawio`、`nano-banana-pro`、`nano-banana-flash` 或 `generate-gpt-image-2` 技能用于视觉。
+  没有它们，README 依然能正常渲染（图表降级为 Mermaid）。
+- **任意系统。** 探测逻辑可跨 macOS / Linux / Windows 移植；运行
+  `python3 scripts/check_integrations.py` 即可查看本机可用能力。若你的技能装在其他位置，可用
+  `README_ARCHITECT_SKILL_ROOTS` 扩展技能搜索路径。
 
 <a id="roadmap"></a>
 
@@ -267,7 +311,7 @@ python3 scripts/validate_readme.py README.md
 
 <div align="center">
 
-由 **README Architect** 技能构建 · 横幅由 `gpt-image-2` 生成
+由 **README Architect** 技能构建 · 横幅由 `gpt-image-2` 生成 · 架构图由 `draw.io` 导出
 
 <a href="https://star-history.com/#ChrysFu-FndVent/readme-architect&Date"><img src="https://api.star-history.com/svg?repos=ChrysFu-FndVent/readme-architect&type=Date" alt="Star History Chart" width="70%" /></a>
 

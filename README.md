@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0B1221" alt="Python" />
   <img src="https://img.shields.io/badge/Agent%20Skill-Qoder%20%26%20Claude-4F46E5?style=for-the-badge&labelColor=0B1221" alt="Agent Skill" />
   <img src="https://img.shields.io/badge/Output-EN%20%2B%20ZH-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Bilingual output" />
+  <img src="https://img.shields.io/badge/Runs%20on-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Cross-platform" />
 </p>
 
 <p>
@@ -29,8 +30,26 @@
 
 > [!NOTE]
 > **Meta moment:** this very README was drafted by the skill itself — analyzed as a developer tool,
-> given a *blueprint* design language, and rendered with a generated hero banner and a workflow
-> diagram. It is the skill eating its own dog food. 🐕
+> given a *blueprint* design language, and rendered with a generated hero banner and a real **draw.io**
+> architecture diagram. It is the skill eating its own dog food. 🐕
+
+<table>
+<tr><td>
+
+**At a glance**
+
+</td><td>
+
+| | |
+|---|---|
+| **Type** | Agent Skill (developer tool) |
+| **Language** | Python 3.8+ · standard library only |
+| **Output** | `README.md` (EN) + `README.zh-CN.md` (中文) |
+| **Runs on** | macOS · Linux · Windows |
+| **Dependencies** | none required — visual skills are optional |
+
+</td></tr>
+</table>
 
 <details>
 <summary>📑 Table of Contents</summary>
@@ -38,6 +57,7 @@
 - [✨ About](#about)
 - [🎯 Features](#features)
 - [⚙️ How it works](#how-it-works)
+- [🏗️ Architecture](#architecture)
 - [🧩 Archetypes](#archetypes)
 - [🎨 Personalization toolkit](#personalization)
 - [🖼️ Visual integration](#visuals)
@@ -84,7 +104,10 @@ repository.
 - 🌐 **Bilingual by default** — parallel `README.md` (English) + `README.zh-CN.md` (中文) with a
   language switch at the top of each.
 - 🖼️ **Optional AI visuals** — architecture/flow diagrams and AI-generated banners, wired to the
-  `drawio`, `nano-banana-pro`, and `generate-gpt-image-2` skills, with graceful fallback.
+  `drawio`, `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` chain, with graceful
+  fallback at every step (down to a native Mermaid diagram).
+- 🖥️ **Portable, not machine-specific** — detects tools, credentials, and skill install roots on
+  *the current* machine (macOS / Linux / Windows); runs the same on someone else's setup and API keys.
 - 🧰 **9-technique decoration toolkit** — badges, aligned HTML blocks, dividers, tasteful emoji,
   collapsible `<details>`, tables, live data cards, `> [!NOTE]` callouts, and anchor navigation.
 - ✅ **Built-in validator** — checks that anchors resolve, local assets exist, and no template
@@ -110,6 +133,25 @@ flowchart LR
 
 The archetype sets the **skeleton**; the project's own design language sets the **skin**. That
 separation is what makes each README feel bespoke rather than templated.
+
+<p align="right"><a href="#readme-top">↑ back to top</a></p>
+
+<a id="architecture"></a>
+
+## 🏗️ Architecture
+
+One stdlib orchestrator drives the pipeline, reads from bundled references/templates, and calls
+companion skills **only when they're detected** — each with a graceful fallback — to emit both READMEs.
+
+<div align="center">
+
+<img src="assets/readme/architecture.png" alt="README Architect architecture: codebase → SKILL.md orchestrator (analyze / check-integrations / validate scripts + references + design language) → companion skills with fallbacks → EN + ZH READMEs" width="100%" />
+
+</div>
+
+> [!TIP]
+> This diagram is itself a **draw.io** export produced by the skill on this machine. Where draw.io
+> isn't installed, the same logic renders a native Mermaid block instead — no binary required.
 
 <p align="right"><a href="#readme-top">↑ back to top</a></p>
 
@@ -151,14 +193,14 @@ language — never generic clip-art.
 
 | Asset | Tool | When |
 |-------|------|------|
-| Architecture / flow / sequence diagram | [`drawio`](https://www.drawio.com) | multi-component systems, pipelines |
-| Banner / logo / illustration | [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → fallback [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | strong branding, no banner exists |
+| Architecture / flow / sequence diagram | [`drawio`](https://www.drawio.com) → native **Mermaid** fallback | multi-component systems, pipelines |
+| Banner / logo / illustration | [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | strong branding, no banner exists |
 
 > [!WARNING]
 > The skill **never fabricates product screenshots or fake metrics.** Real screenshots are used only
 > if they already exist in the repo; image generation is limited to banners, logos, and abstract art.
-> If a generator or its credentials are unavailable, the README degrades gracefully and notes the
-> omission — as it did here, where the diagram fell back to a native Mermaid flowchart.
+> If a generator or its credentials are unavailable, the README degrades gracefully down the chain
+> (and diagrams fall back to native Mermaid), always noting any omission.
 
 <a id="structure"></a>
 
@@ -179,8 +221,9 @@ readme-architect/
 ├── templates/                  # per-archetype README skeletons
 ├── scripts/
 │   ├── analyze_project.py      # repo → profile.json (stdlib only)
+│   ├── check_integrations.py    # detect drawio / image skills / creds (any OS)
 │   └── validate_readme.py      # anchors / links / placeholders check
-└── assets/readme/              # generated banner & visuals
+└── assets/readme/              # generated banner & architecture diagram
 ```
 
 </details>
@@ -239,8 +282,11 @@ python3 scripts/validate_readme.py README.md
 ## 📋 Requirements
 
 - **Python 3.8+** — the analyzer and validator use only the standard library (no `pip install`).
-- **Optional:** the `drawio`, `nano-banana-pro`, or `generate-gpt-image-2` skills for visuals. The
-  README renders fine without them.
+- **Optional:** the `drawio`, `nano-banana-pro`, `nano-banana-flash`, or `generate-gpt-image-2` skills
+  for visuals. The README renders fine without them (diagrams fall back to Mermaid).
+- **Any OS.** Detection is portable across macOS / Linux / Windows; run
+  `python3 scripts/check_integrations.py` to see what's available on your machine. Extend skill search
+  paths with `README_ARCHITECT_SKILL_ROOTS` if your skills live elsewhere.
 
 <a id="roadmap"></a>
 
@@ -275,7 +321,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 <div align="center">
 
-Built with the **README Architect** skill · banner by `gpt-image-2`
+Built with the **README Architect** skill · banner by `gpt-image-2` · diagram by `draw.io`
 
 <a href="https://star-history.com/#ChrysFu-FndVent/readme-architect&Date"><img src="https://api.star-history.com/svg?repos=ChrysFu-FndVent/readme-architect&type=Date" alt="Star History Chart" width="70%" /></a>
 

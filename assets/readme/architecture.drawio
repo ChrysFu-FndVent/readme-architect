@@ -1,0 +1,68 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="arch" name="architecture">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="640" math="0" shadow="0" background="#0B1221">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="in" value="📂 Your codebase&#xa;(code · manifests · git remote)" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=13;verticalAlign=middle;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="orch" value="🧭 SKILL.md&#xa;orchestrator · 7-step workflow" style="rounded=1;fillColor=#111C33;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=14;fontStyle=1;verticalAlign=top;spacingTop=10;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="440" height="400" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1" value="analyze_project.py&#xa;repo → profile.json" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="390" y="170" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="check_integrations.py&#xa;detect tools + credentials" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="390" y="285" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="validate_readme.py&#xa;anchors · links · placeholders" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="390" y="400" width="180" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="refs" value="references/ + templates/&#xa;archetypes · sections · decoration" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="200" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="design" value="🎨 design language&#xa;palette · motifs · tone" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="350" width="160" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="skills" value="🔌 companion skills (detected + graceful fallback)" style="rounded=1;fillColor=#111C33;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="920" y="120" width="280" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="k1" value="drawio → Mermaid fallback" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="945" y="160" width="230" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="k2" value="nano-banana-pro → flash" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="945" y="220" width="230" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="k3" value="generate-gpt-image-2" style="rounded=1;fillColor=#0B1221;strokeColor=#38BDF8;fontColor=#E5E7EB;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="945" y="280" width="230" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="out1" value="README.md (EN)" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="960" y="420" width="200" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="out2" value="README.zh-CN.md (中文)" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="960" y="500" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e0" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#38BDF8;strokeWidth=1.5;endArrow=block;" edge="1" parent="1" source="in" target="orch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;dashed=1;" edge="1" parent="1" source="orch" target="skills">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;" edge="1" parent="1" source="skills" target="out1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;" edge="1" parent="1" source="orch" target="out2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
