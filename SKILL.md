@@ -127,6 +127,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - Keep generated files inside the project workspace; never leak API keys into prompts, files, or logs.
 - Retry a failing external skill at most once, then degrade gracefully and report.
 - Respect existing hand-written docs; prefer additive/side-file output when unsure.
+- **Portable, not machine-specific.** Never assume the author's setup. Always run `check_integrations.py` on the current machine and act on *its* results — different OS (macOS/Linux/Windows), different skill install roots (override with `README_ARCHITECT_SKILL_ROOTS`), and different credentials (`XIAOHULI_API_KEY` or an OpenAI credential via `~/.codex/auth.json` / `OPENAI_API_KEY`) are all expected. If a companion skill is missing, use the next route in the chain; if a needed key is absent, ask the user for that exact variable once, else skip the asset. The README must still generate end-to-end with whatever is available.
 
 ## Reference files
 
@@ -140,5 +141,5 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 ## Scripts
 
 - `scripts/analyze_project.py` — build the structured project profile (Step 1).
-- `scripts/check_integrations.py` — detect available image routes, drawio (PATH/app bundle), Mermaid, and credentials; prints the preferred banner route (Step 4). `--json` for machine output.
+- `scripts/check_integrations.py` — detect available image routes, drawio (PATH/app bundle), Mermaid, and credentials **on the current machine**; prints the preferred banner route (Step 4). `--json` for machine output. Portable across macOS/Linux/Windows; extend skill search paths with `README_ARCHITECT_SKILL_ROOTS`.
 - `scripts/validate_readme.py` — validate sections, TOC anchors, local paths, placeholders (Step 6).

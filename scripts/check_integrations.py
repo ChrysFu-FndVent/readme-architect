@@ -20,13 +20,35 @@ import os
 import shutil
 import sys
 
-SKILL_ROOTS = [
+# Default skill install roots, probed on any machine. Extend for other setups
+# via env: README_ARCHITECT_SKILL_ROOTS="/path/one:/path/two" (os.pathsep-separated).
+DEFAULT_SKILL_ROOTS = [
     "~/.qoder/skills",
     "~/.claude/skills",
     "~/.codex/skills",
     "~/.hermes/skills",
     "~/.workbuddy-ai/skills",
+    "~/.config/skills",
+    "~/skills",
+    "~/.local/share/skills",
 ]
+
+
+def skill_roots():
+    """Roots to search for companion skills. Env override wins, then defaults,
+    plus Windows %APPDATA% locations — so this works on machines other than the
+    author's without code edits."""
+    roots = []
+    env = os.environ.get("README_ARCHITECT_SKILL_ROOTS")
+    if env:
+        roots += [p for p in env.split(os.pathsep) if p.strip()]
+    roots += list(DEFAULT_SKILL_ROOTS)
+    for var in ("APPDATA", "LOCALAPPDATA"):
+        base = os.environ.get(var)
+        if base:
+            roots.append(os.path.join(base, "skills"))
+    return roots
+
 
 IMAGE_SKILLS = {
     "nano-banana-pro": ("scripts/generate_image.py", "python3"),
@@ -41,7 +63,7 @@ def _expand(p: str) -> str:
 
 def find_skill(name: str, rel_script: str):
     """Return the first existing absolute script path for a skill, else None."""
-    for root in SKILL_ROOTS:
+    for root in skill_roots():
         cand = os.path.join(_expand(root), name, rel_script)
         if os.path.isfile(cand):
             return cand
@@ -67,16 +89,26 @@ def codex_auth_has_key() -> bool:
 
 
 def detect_drawio():
-    """Return (available: bool, invocation: str|None, note: str)."""
-    on_path = shutil.which("drawio")
+    """Return (available: bool, invocation: str|None, note: str). Works on
+    macOS / Linux / Windows without assuming one machine's layout."""
+    on_path = shutil.which("drawio") or shutil.which("draw.io")
     if on_path:
         return True, on_path, "drawio on PATH"
-    mac_app = "/Applications/draw.io.app/Contents/MacOS/draw.io"
-    if os.path.isfile(mac_app):
-        return True, mac_app, "macOS draw.io.app bundle (not on PATH)"
+    candidates = [
+        "/Applications/draw.io.app/Contents/MacOS/draw.io",
+        _expand("~/Applications/draw.io.app/Contents/MacOS/draw.io"),
+    ]
+    for var in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA"):
+        base = os.environ.get(var)
+        if base:
+            candidates.append(os.path.join(base, "draw.io", "draw.io.exe"))
+    for c in candidates:
+        if c and os.path.isfile(c):
+            note = "macOS draw.io.app bundle" if c.endswith("draw.io") else "Windows draw.io install"
+            return True, c, note + " (not on PATH)"
     if sys.platform.startswith("linux") and shutil.which("xvfb-run"):
-        return False, None, "xvfb-run present but no drawio binary"
-    return False, None, "no draw.io CLI/app found"
+        return False, None, "xvfb-run present but no drawio binary (install drawio-desktop)"
+    return False, None, "no draw.io CLI/app found — will fall back to Mermaid"
 
 
 def detect():
@@ -86,10 +118,12 @@ def detect():
     report["runtimes"]["python3"] = bool(shutil.which("python3") or sys.executable)
     report["runtimes"]["node"] = bool(shutil.which("node"))
 
-    # credentials
+    # credentials (any of several sources may satisfy a route on a given machine)
     xkey = bool(os.environ.get("XIAOHULI_API_KEY"))
+    openai_env = bool(os.environ.get("OPENAI_API_KEY"))
     codex = codex_auth_has_key()
     report["credentials"]["XIAOHULI_API_KEY_env"] = xkey
+    report["credentials"]["OPENAI_API_KEY_env"] = openai_env
     report["credentials"]["codex_auth_OPENAI_API_KEY"] = codex
 
     # image skills
@@ -98,10 +132,10 @@ def detect():
         installed = path is not None
         if name.startswith("nano-banana"):
             usable = installed and xkey
-            need = None if usable else ("XIAOHULI_API_KEY" if installed else "install skill")
-        else:  # gpt-image-2 reuses the local codex credential
-            usable = installed and (codex or xkey)
-            need = None if usable else ("~/.codex/auth.json OPENAI_API_KEY" if installed else "install skill")
+            need = None if usable else ("XIAOHULI_API_KEY (ask the user)" if installed else "install skill")
+        else:  # gpt-image-2 uses the local Codex provider credential or OPENAI_API_KEY
+            usable = installed and (codex or openai_env)
+            need = None if usable else ("~/.codex/auth.json or OPENAI_API_KEY (ask the user)" if installed else "install skill")
         report["image"][name] = {
             "installed": installed, "path": path, "runtime": runtime,
             "usable_now": usable, "needs": need,
@@ -160,15 +194,22 @@ def print_human(report):
 
     print("\nCredentials:")
     print(f"  [{mark(report['credentials']['XIAOHULI_API_KEY_env'])}] XIAOHULI_API_KEY (env) — nano-banana pro/flash")
-    print(f"  [{mark(report['credentials']['codex_auth_OPENAI_API_KEY'])}] ~/.codex/auth.json OPENAI_API_KEY — gpt-image-2")
+    gpt_cred = report['credentials']['codex_auth_OPENAI_API_KEY'] or report['credentials']['OPENAI_API_KEY_env']
+    src = "~/.codex/auth.json" if report['credentials']['codex_auth_OPENAI_API_KEY'] else ("OPENAI_API_KEY env" if report['credentials']['OPENAI_API_KEY_env'] else "none")
+    print(f"  [{mark(gpt_cred)}] OpenAI credential for gpt-image-2 — source: {src}")
 
     print("\nWeb widgets (need only a public repo + viewer network):")
     for k, v in report["web_widgets"].items():
         print(f"  [{mark(v)}] {k}")
 
-    if not report["credentials"]["XIAOHULI_API_KEY_env"]:
-        print("\nHint: to enable nano-banana, export XIAOHULI_API_KEY in the shell before generating:")
-        print("      export XIAOHULI_API_KEY=<your key>   # ask the user; never hard-code or log it")
+    if preferred_banner_route(report) is None:
+        print("\nHint: no image route is usable on this machine. Either:")
+        print("  • install one of: nano-banana-pro / nano-banana-flash / generate-gpt-image-2, or")
+        print("  • provide a credential — export XIAOHULI_API_KEY=<key> (nano-banana) or OPENAI_API_KEY=<key> (gpt-image-2).")
+        print("  The README still generates without a banner; ask the user before requesting any key, and never log it.")
+    elif not report["credentials"]["XIAOHULI_API_KEY_env"]:
+        print("\nHint: nano-banana needs XIAOHULI_API_KEY; falling back to gpt-image-2 where possible.")
+        print("      To enable nano-banana: export XIAOHULI_API_KEY=<key>  # ask the user; never hard-code or log it")
 
 
 def main():
