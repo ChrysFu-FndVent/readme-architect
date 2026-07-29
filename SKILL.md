@@ -1,6 +1,6 @@
 ---
 name: readme-architect
-description: Automatically generate a personalized, style-matched README for a project by analyzing its code and files. Detects the project's archetype (library, CLI, web/app, framework, ML/AI, monorepo, minimal) and adapts layout, sections, badges, and tone accordingly. Produces bilingual output (English README.md + Chinese README.zh-CN.md) and can integrate the drawio skill for architecture/flow diagrams and the nano-banana-pro (fallback generate-gpt-image-2) skill for banners/logos/illustrations. Use when the user asks to create, generate, write, refresh, or beautify a README / project documentation from a codebase.
+description: Automatically generate a personalized, style-matched README for a project by analyzing its code and files. Detects the project's archetype (library, CLI, web/app, framework, ML/AI, monorepo, minimal) and adapts layout, sections, badges, and tone accordingly. Produces bilingual output (English README.md + Chinese README.zh-CN.md) and integrates the drawio skill (with a Mermaid fallback) for architecture/flow diagrams and the nano-banana-pro / nano-banana-flash / generate-gpt-image-2 skills for banners/logos/illustrations. Use when the user asks to create, generate, write, refresh, or beautify a README / project documentation from a codebase.
 ---
 
 # README Architect
@@ -69,16 +69,33 @@ Build badges from the git remote and detected facts using [references/badges.md]
 
 Decide per [references/visual-assets.md](references/visual-assets.md). Save all generated assets under `<project-root>/assets/readme/` and embed with **relative paths**.
 
-- **Architecture / flow / sequence diagram → `drawio` skill.** Generate when the project has meaningful structure (backend+frontend, services, ML pipeline, multi-module data flow). Feed it the real components you found; export PNG and embed it.
-- **Banner / logo / illustration → `nano-banana-pro` skill** (fallback **`generate-gpt-image-2`** if nano-banana is unavailable or the user prefers it). Generate for `web-app` / `framework` archetypes, or when the project has strong branding and no existing logo. Derive the prompt from the project's real domain, name, and palette.
+**First, detect what's actually available** — never guess whether a companion skill or credential is present:
+
+```bash
+python3 "<skill-dir>/scripts/check_integrations.py"        # human-readable
+python3 "<skill-dir>/scripts/check_integrations.py" --json  # machine-readable
+```
+
+This reports, per integration: image routes (`nano-banana-pro` / `nano-banana-flash` / `generate-gpt-image-2`) with `installed` + `usable_now` + what each `needs`, the drawio invocation (CLI on PATH **or** the macOS `draw.io.app` bundle), Mermaid (always available), which credentials are present (`XIAOHULI_API_KEY` env, `~/.codex/auth.json` `OPENAI_API_KEY`), and the **preferred banner route**. Let this report drive the choices below.
+
+- **Architecture / flow / sequence diagram.** Generate when the project has meaningful structure (backend+frontend, services, ML pipeline, multi-module data flow). Feed it the real components you found.
+  - If the report shows **drawio available**, build the `.drawio` XML for the detected diagram type (color nodes/edges with the Step 2b palette), export PNG via the reported invocation, and embed the PNG.
+  - If drawio is **not** available, fall back to a native ` ```mermaid ` block (GitHub renders it inline, no binary needed) styled with the same palette via a `classDef`.
+- **Banner / logo / illustration.** Generate for `web-app` / `framework` archetypes, or when the project has strong branding and no existing logo. Derive the prompt from the project's real domain, name, and palette (Step 2b). Use the **preferred banner route** from the report, following this fallback chain:
+  1. `nano-banana-pro` (model `gemini-3-pro-image`) — best quality; needs `XIAOHULI_API_KEY`.
+  2. `nano-banana-flash` (model `gemini-3.1-flash-image`) — faster; also needs `XIAOHULI_API_KEY`.
+  3. `generate-gpt-image-2` — reuses the local `~/.codex/auth.json` `OPENAI_API_KEY`, so it works with no extra key.
+  Move down the chain on a failed/`503`/model-unavailable response or a missing credential.
 - **Never fabricate product screenshots.** Use real screenshots only if they already exist in the repo. Image-gen is for banners/logos/abstract illustrations, not fake UI.
+
+**API-key handling.** nano-banana pro/flash require `XIAOHULI_API_KEY` in the environment. If the report shows both nano-banana skills installed but blocked on that key, and `generate-gpt-image-2` is usable, silently use the gpt-image-2 fallback. If **no** image route is usable and the user asked for a banner/logo, ask the user once to `export XIAOHULI_API_KEY=<key>` (or confirm skipping the image) — never hard-code, echo, or log the key value.
 
 If a tool/skill or its credentials are unavailable, **degrade gracefully**: skip that asset, proceed, and note the omission in the final report. Do not block the README on missing visuals.
 
 Invocation contracts (verify a skill's own SKILL.md before calling — do not guess flags):
-- drawio: build the `.drawio` XML for the detected diagram type, export PNG via the drawio CLI, embed the PNG.
-- nano-banana-pro: `python <skill-dir>/scripts/generate_image.py --prompt "<prompt>" --output "<assets/readme/banner.png>"` (needs `XIAOHULI_API_KEY`).
-- generate-gpt-image-2: `node <skill-dir>/scripts/gpt_image_2.mjs generate --prompt "<prompt>" --out "<assets/readme/banner.png>"`.
+- drawio (PATH): `drawio -x -f png --scale 2 -o out.png in.drawio`; macOS app bundle: `/Applications/draw.io.app/Contents/MacOS/draw.io -x -f png --scale 2 -o out.png in.drawio`; Linux headless: prefix with `xvfb-run -a`.
+- nano-banana-pro / nano-banana-flash: `python3 <skill-dir>/scripts/generate_image.py --prompt "<prompt>" --output "<assets/readme/banner.png>"` (needs `XIAOHULI_API_KEY`).
+- generate-gpt-image-2: `node <skill-dir>/scripts/gpt_image_2.mjs generate --prompt "<prompt>" --out "<assets/readme/banner.png>"` (uses `~/.codex/auth.json`).
 
 ### Step 5 — Assemble the README(s)
 
@@ -119,3 +136,9 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/decoration-toolkit.md](references/decoration-toolkit.md) — the 9 personalization techniques (badges, dividers, alignment, emoji, `<details>`, tables, dynamic cards, callouts, anchors) with copy-ready markup.
 - [references/visual-assets.md](references/visual-assets.md) — when & how to call drawio / nano-banana-pro / gpt-image-2.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
+
+## Scripts
+
+- `scripts/analyze_project.py` — build the structured project profile (Step 1).
+- `scripts/check_integrations.py` — detect available image routes, drawio (PATH/app bundle), Mermaid, and credentials; prints the preferred banner route (Step 4). `--json` for machine output.
+- `scripts/validate_readme.py` — validate sections, TOC anchors, local paths, placeholders (Step 6).
