@@ -3,19 +3,15 @@
 
 <div align="center">
 
-<img src="assets/readme/banner.png" alt="README Architect banner" width="100%" />
-
 <h1>README Architect</h1>
 
 <p><em>Point it at a codebase — get a personalized, style-matched, <strong>bilingual</strong> README.</em></p>
 
 <p>
-  <a href="https://github.com/ChrysFu-FndVent/readme-architect/stargazers"><img src="https://img.shields.io/github/stars/ChrysFu-FndVent/readme-architect?style=for-the-badge&color=38BDF8&labelColor=0B1221" alt="Stars" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/ChrysFu-FndVent/readme-architect?style=for-the-badge&color=4F46E5&labelColor=0B1221" alt="License" /></a>
-  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0B1221" alt="Python" />
-  <img src="https://img.shields.io/badge/Agent%20Skill-Qoder%20%26%20Claude-4F46E5?style=for-the-badge&labelColor=0B1221" alt="Agent Skill" />
-  <img src="https://img.shields.io/badge/Output-ZH%20%E2%86%92%20EN-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Chinese first, English second" />
-  <img src="https://img.shields.io/badge/Runs%20on-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Cross-platform" />
+  <img src="https://img.shields.io/badge/Built%20with-Python-0EA5E9?style=for-the-badge&logo=python&logoColor=white&labelColor=0B1221" alt="Built with Python" />
+  <img src="https://img.shields.io/badge/Tests-included-14B8A6?style=for-the-badge&labelColor=0B1221" alt="Tests included" />
+  <img src="https://img.shields.io/badge/Output-Chinese%20then%20English-4F46E5?style=for-the-badge&labelColor=0B1221" alt="Chinese body first, English body second" />
 </p>
 
 </div>
@@ -76,7 +72,7 @@
 
 > [!TIP]
 > 核心在于**契合**。精简的库会得到信息密集、以内容为先的 README；Web 应用则得到带突出横幅、项目徽章、
-> 演示入口和功能网格的居中开场区（Hero section）。两者都由代码中的真实证据驱动。
+> 演示入口和功能网格的居中开场区。两者都由代码中的真实证据驱动。
 
 <a id="zh-features"></a>
 
@@ -128,15 +124,29 @@ flowchart LR
 一个纯标准库编排器驱动整条流水线，读取内置的 references/templates，并**仅在探测到时**才调用伴生技能
 （每个都有优雅降级），最终产出一份中文正文在前、英文正文在后的 README。
 
-<div align="center">
-
-<img src="assets/readme/architecture.png" alt="README Architect 架构：代码库 → SKILL.md 编排器（分析 / 集成探测 / 校验脚本 + 参考文件 + 设计语言）→ 带降级的伴生技能 → 中英双 README" width="100%" />
-
-</div>
+```mermaid
+flowchart LR
+    A[项目代码库] --> B[analyze_project.py]
+    B --> C[项目档案]
+    C --> D[plan_readme_visuals.py]
+    D --> E[视觉方案]
+    F[SKILL.md、references、templates] --> H[README 组装]
+    E --> H
+    I[check_integrations.py] --> J[媒体准备、draw.io 或图像生成]
+    J --> H
+    H --> K[validate_readme.py]
+    K --> L[中英双语 README]
+    classDef source fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
+    classDef process fill:#172554,stroke:#818CF8,stroke-width:1.2px,color:#E5E7EB;
+    classDef output fill:#064E3B,stroke:#34D399,stroke-width:1.2px,color:#ECFDF5;
+    class A,F,I source;
+    class B,D,H,J,K process;
+    class C,E,L output;
+```
 
 > [!TIP]
-> 这张图本身就是技能在本机上用 **draw.io** 导出的。当未安装 draw.io 时，同样的逻辑会改用原生
-> Mermaid 块渲染 —— 无需任何二进制依赖。
+> 此图的节点和箭头与 English 部分完全一致，只翻译读者可见标签。draw.io 可用时，技能也能导出同一模型的
+> PNG；否则 GitHub 原生 Mermaid 就是可靠的无二进制降级路径。
 
 <p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
 
@@ -177,7 +187,7 @@ flowchart LR
 | 资产 | 工具 | 何时生成 |
 |------|------|----------|
 | 架构 / 流程 / 时序图 | [`drawio`](https://www.drawio.com) → 原生 **Mermaid** 兜底 | 多组件系统、流水线 |
-| 横幅 / logo / 插图 | [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | 品牌感强、且尚无横幅 |
+| 横幅 / logo / 插图 | 宿主 `imagegen` → [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | 真实项目媒体无法表达概念、且视觉方案明确需要 |
 
 > [!WARNING]
 > 技能**绝不伪造产品截图或虚假指标。** 只有当仓库里已存在真实截图时才使用；图像生成仅限于横幅、logo 与
@@ -211,7 +221,7 @@ readme-architect/
 │   ├── plan_readme_visuals.py  # 规划徽章、分隔条和视觉资产
 │   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
 ├── tests/                      # 分析与双语布局的回归测试
-└── assets/readme/              # 生成的横幅与架构图
+└── assets/readme/              # 审核通过的 README 视觉资产
 ```
 
 </details>
@@ -263,10 +273,15 @@ EOF
 # 1. 把仓库分析成结构化 profile
 python3 scripts/analyze_project.py --root . --out .readme-architect/profile.json
 
-# 2. 校验默认的中英双语 README
+# 2. 根据可核对的证据规划徽章和视觉预算
+python3 scripts/plan_readme_visuals.py \
+  --profile .readme-architect/profile.json \
+  --out .readme-architect/visual-plan.json
+
+# 3. 校验默认的中英双语 README
 python3 scripts/validate_readme.py --bilingual README.md
 
-# 3. 运行内置回归测试
+# 4. 运行内置回归测试
 python3 -m unittest discover -s tests -v
 ```
 
@@ -376,7 +391,7 @@ badges, tone, and illustrations chosen to fit *this* repository.
 
 > [!TIP]
 > The whole point is **fit**. A lean library gets a dense, information-first README; a web app gets a
-> centered project opening (Hero section) with a prominent banner, badges, demo links, and a feature
+> centered project opening with a prominent banner, badges, demo links, and a feature
 > grid. Both are driven by evidence found in the code.
 
 <a id="en-features"></a>
@@ -439,15 +454,30 @@ One stdlib orchestrator drives the pipeline, reads from bundled references/templ
 companion skills **only when they're detected** — each with a graceful fallback — to emit one README
 with a Chinese body followed by its English equivalent.
 
-<div align="center">
-
-<img src="assets/readme/architecture.png" alt="README Architect architecture: codebase → SKILL.md orchestrator (analyze / check-integrations / validate scripts + references + design language) → companion skills with fallbacks → EN + ZH READMEs" width="100%" />
-
-</div>
+```mermaid
+flowchart LR
+    A[Project codebase] --> B[analyze_project.py]
+    B --> C[Project profile]
+    C --> D[plan_readme_visuals.py]
+    D --> E[Visual plan]
+    F[SKILL.md, references, templates] --> H[README assembly]
+    E --> H
+    I[check_integrations.py] --> J[Media preparation, draw.io, or image generation]
+    J --> H
+    H --> K[validate_readme.py]
+    K --> L[Bilingual README]
+    classDef source fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
+    classDef process fill:#172554,stroke:#818CF8,stroke-width:1.2px,color:#E5E7EB;
+    classDef output fill:#064E3B,stroke:#34D399,stroke-width:1.2px,color:#ECFDF5;
+    class A,F,I source;
+    class B,D,H,J,K process;
+    class C,E,L output;
+```
 
 > [!TIP]
-> This diagram is itself a **draw.io** export produced by the skill on this machine. Where draw.io
-> isn't installed, the same logic renders a native Mermaid block instead — no binary required.
+> This is the same node-and-edge model as the Chinese diagram, with reader-facing labels localized.
+> When draw.io is available, the skill can export the same model as a PNG; otherwise GitHub-native
+> Mermaid is the dependable no-binary fallback.
 
 <p align="right"><a href="#readme-top">↑ back to top</a></p>
 
@@ -490,7 +520,7 @@ language — never generic clip-art.
 | Asset | Tool | When |
 |-------|------|------|
 | Architecture / flow / sequence diagram | [`drawio`](https://www.drawio.com) → native **Mermaid** fallback | multi-component systems, pipelines |
-| Banner / logo / illustration | [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | strong branding, no banner exists |
+| Banner / logo / illustration | host `imagegen` → [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | real project media cannot express the concept and the visual plan explicitly requests it |
 
 > [!WARNING]
 > The skill **never fabricates product screenshots or fake metrics.** Real screenshots are used only
@@ -526,7 +556,7 @@ readme-architect/
 │   ├── plan_readme_visuals.py  # plan badges, dividers, and visual assets
 │   └── validate_readme.py      # anchors / links / placeholders check
 ├── tests/                      # analyzer and bilingual-layout regression tests
-└── assets/readme/              # generated banner & architecture diagram
+└── assets/readme/              # reviewed README visual assets
 ```
 
 </details>
@@ -578,10 +608,15 @@ EOF
 # 1. Analyze a repo into a structured profile
 python3 scripts/analyze_project.py --root . --out .readme-architect/profile.json
 
-# 2. Validate the default bilingual README
+# 2. Plan evidence-backed badges and visual budget
+python3 scripts/plan_readme_visuals.py \
+  --profile .readme-architect/profile.json \
+  --out .readme-architect/visual-plan.json
+
+# 3. Validate the default bilingual README
 python3 scripts/validate_readme.py --bilingual README.md
 
-# 3. Run the built-in regression tests
+# 4. Run the built-in regression tests
 python3 -m unittest discover -s tests -v
 ```
 
