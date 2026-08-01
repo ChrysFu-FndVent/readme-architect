@@ -89,7 +89,7 @@
 - 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
   配图生成提示词。
 - 🌐 **默认双语** —— 单个 `README.md` 中完整中文正文在前、英文正文在后，标题和短简介只出现英文版一次。
-- 🖼️ **项目媒体与高质量视觉** —— 按相关性筛选并无损派生项目内真实图片，可选中心裁切且保留来源清单；架构图以同一证据模型渲染中英双版本。缺少真实素材时，才调用 `imagegen` 或 `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` 生成与项目匹配的插图，并经视觉复核后嵌入。
+- 🖼️ **视觉编排与高质量资产** —— 按相关性筛选并无损派生项目内真实图片；从 CI、许可证、语言、测试、容器和配置证据生成彩色状态徽章；按项目气质规划横幅、插图、双语架构图和渐变/emoji 分隔条。所有生成图片都须视觉复核，绝不伪造状态或产品截图。
 - 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
   换到别人的环境、用别的 API 密钥照样跑通。
 - 🧹 **可控的分析范围** —— 通过 `.readme-architectignore` 排除敏感、生成或无关文件，让结论只基于应当公开的项目证据。
@@ -201,12 +201,14 @@ readme-architect/
 │   ├── input-controls.md       # 忽略规则与双语输出契约
 │   ├── presentation-recipes.md # 可组合信号驱动的徽章、图表与配图
 │   ├── bilingual-architecture.md # 清晰的中英配对架构图规范
+│   ├── visual-composition.md   # 徽章、分隔条与插图的证据化编排
 │   └── visual-assets.md        # 项目媒体 / drawio / imagegen 联动
 ├── templates/                  # 各项目类型的 README 骨架
 ├── scripts/
 │   ├── analyze_project.py      # 仓库 → profile.json（纯标准库）
 │   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
 │   ├── prepare_readme_assets.py # 筛选、派生和可选裁切项目图片
+│   ├── plan_readme_visuals.py  # 规划徽章、分隔条和视觉资产
 │   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
 ├── tests/                      # 分析与双语布局的回归测试
 └── assets/readme/              # 生成的横幅与架构图
@@ -218,6 +220,7 @@ readme-architect/
 [section-library](references/section-library.md) ·
 [style-archetypes](references/style-archetypes.md) ·
 [decoration-toolkit](references/decoration-toolkit.md) ·
+[visual-composition](references/visual-composition.md) ·
 [visual-assets](references/visual-assets.md) ·
 [input-controls](references/input-controls.md) ·
 [presentation-recipes](references/presentation-recipes.md)。
@@ -388,11 +391,10 @@ badges, tone, and illustrations chosen to fit *this* repository.
   and lets them drive **both** the layout styling **and** every image-generation prompt.
 - 🌐 **Bilingual by default** — one `README.md` with an English-only title and tagline, a Chinese body
   first, and an English body second, linked with anchors at the top.
-- 🖼️ **Project media and high-quality visuals** — ranks and non-destructively derives real project
-  images with an auditable manifest and optional center crop; renders paired Chinese/English diagrams
-  from one evidence map. Only when real media is insufficient does it call `imagegen` or the
-  `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` chain for inspected,
-  project-matched illustrations.
+- 🖼️ **Visual composition and high-quality assets** — ranks and non-destructively derives real project
+  images; turns CI, license, language, tests, container, and configuration evidence into colorful
+  status badges; then plans banners, illustrations, paired Chinese/English diagrams, and gradient or
+  emoji dividers to fit the project. Every generated image is reviewed; no status or product screen is fabricated.
 - 🖥️ **Portable, not machine-specific** — detects tools, credentials, and skill install roots on
   *the current* machine (macOS / Linux / Windows); runs the same on someone else's setup and API keys.
 - 🧹 **Controllable evidence scope** — `.readme-architectignore` excludes sensitive, generated, or
@@ -514,12 +516,14 @@ readme-architect/
 │   ├── input-controls.md       # ignore rules and bilingual output contract
 │   ├── presentation-recipes.md # composable badges, diagrams, and visuals
 │   ├── bilingual-architecture.md # readable Chinese/English diagram pairs
+│   ├── visual-composition.md   # evidence-bound badges, dividers, and image briefs
 │   └── visual-assets.md        # project media / drawio / imagegen integration
 ├── templates/                  # per-archetype README skeletons
 ├── scripts/
 │   ├── analyze_project.py      # repo → profile.json (stdlib only)
 │   ├── check_integrations.py    # detect drawio / image skills / creds (any OS)
 │   ├── prepare_readme_assets.py # select, derive, and optionally crop project images
+│   ├── plan_readme_visuals.py  # plan badges, dividers, and visual assets
 │   └── validate_readme.py      # anchors / links / placeholders check
 ├── tests/                      # analyzer and bilingual-layout regression tests
 └── assets/readme/              # generated banner & architecture diagram
@@ -531,6 +535,7 @@ Reference files worth reading: [SKILL.md](SKILL.md) ·
 [section-library](references/section-library.md) ·
 [style-archetypes](references/style-archetypes.md) ·
 [decoration-toolkit](references/decoration-toolkit.md) ·
+[visual-composition](references/visual-composition.md) ·
 [visual-assets](references/visual-assets.md) ·
 [input-controls](references/input-controls.md) ·
 [presentation-recipes](references/presentation-recipes.md).

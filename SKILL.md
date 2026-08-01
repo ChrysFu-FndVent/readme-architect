@@ -67,6 +67,18 @@ Start from the archetype's section set, then **include only sections you have re
 
 Build badges from the git remote and detected facts using [references/badges.md](references/badges.md). Never emit a badge that points at a resource that does not exist (e.g. no coverage badge without coverage).
 
+Then derive an evidence-bound visual plan before adding decorative components:
+
+```bash
+python3 "<skill-dir>/scripts/plan_readme_visuals.py" \
+  --profile "<project-root>/.readme-architect/profile.json" \
+  --out "<project-root>/.readme-architect/visual-plan.json"
+```
+
+Read the plan's `badge_candidates`, `badge_budget`, `separator`, and `visual_requests`. Verify the
+listed evidence, then select the smallest useful set. A static `Tests: included` badge may describe
+test files; it must never become a passing-status claim. See [references/visual-composition.md](references/visual-composition.md).
+
 ### Step 4 — Prepare and generate visual assets (conditional)
 
 Decide per [references/visual-assets.md](references/visual-assets.md). Save all generated assets under `<project-root>/assets/readme/` and embed with **relative paths**.
@@ -90,6 +102,13 @@ copy; the script never edits source media. Read the emitted JSON manifest, use i
 alt text that describes what is actually visible. See [references/visual-assets.md](references/visual-assets.md)
 for selection and privacy rules.
 
+**Apply the visual plan with restraint.** Use its colored badges only when their evidence survives
+verification. For a rich project opening, center the approved badge set below the title and use the
+planned banner/illustration only when it adds information beyond real media. Generate a thin, text-free
+gradient divider from the project palette only when the plan requests one and an image route is usable;
+otherwise use its emoji or Markdown fallback. Never use more divider strips than the plan allows or
+place them after every section.
+
 **First, detect what's actually available** — never guess whether a companion skill or credential is present:
 
 ```bash
@@ -102,7 +121,7 @@ This reports, per integration: image routes (`nano-banana-pro` / `nano-banana-fl
 - **Architecture / flow / sequence diagram.** Generate when the project has meaningful structure (backend+frontend, services, ML pipeline, multi-module data flow). Feed it the real components you found. Use [references/bilingual-architecture.md](references/bilingual-architecture.md): build one shared evidence map, then render a Chinese-labelled and English-labelled diagram with identical topology. Embed each in its matching language section (or render two localized Mermaid blocks).
   - If the report shows **drawio available**, build the `.drawio` XML for the detected diagram type (color nodes/edges with the Step 2b palette), export PNG via the reported invocation, and embed the PNG.
   - If drawio is **not** available, fall back to a native ` ```mermaid ` block (GitHub renders it inline, no binary needed) styled with the same palette via a `classDef`.
-- **Banner / logo / illustration.** Generate only when real media cannot communicate the concept and the presentation signals call for an illustration. Derive a project evidence pack (domain, real components, audience, palette, motifs, forbidden claims) from Step 2b. If the host offers an `imagegen` skill, read and use it first: generate a bitmap asset, inspect the result, make at most one targeted revision, and move the approved file into `assets/readme/`. Otherwise use the **preferred banner route** from the integration report: `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2`. Move down the chain on a failed/`503`/model-unavailable response or a missing credential. Use [references/visual-assets.md](references/visual-assets.md) for the required prompt structure and acceptance check.
+- **Banner / logo / illustration / divider.** Generate only when real media cannot communicate the concept and the visual plan requests the asset. Derive a project evidence pack (domain, real components, audience, palette, motifs, forbidden claims) from Step 2b. If the host offers an `imagegen` skill, read and use it first: generate a bitmap asset, inspect the result, make at most one targeted revision, and move the approved file into `assets/readme/`. Otherwise use the **preferred banner route** from the integration report: `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2`. Move down the chain on a failed/`503`/model-unavailable response or a missing credential. Use [references/visual-assets.md](references/visual-assets.md) and [references/visual-composition.md](references/visual-composition.md) for prompt, placement, and acceptance rules.
 - **Never fabricate product screenshots.** Use real screenshots only if they already exist in the repo. Image-gen is for banners/logos/abstract illustrations, not fake UI.
 
 **API-key handling.** nano-banana pro/flash require `XIAOHULI_API_KEY` in the environment. If the report shows both nano-banana skills installed but blocked on that key, and `generate-gpt-image-2` is usable, silently use the gpt-image-2 fallback. If **no** image route is usable and the user asked for a banner/logo, ask the user once to `export XIAOHULI_API_KEY=<key>` (or confirm skipping the image) — never hard-code, echo, or log the key value.
@@ -154,6 +173,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/decoration-toolkit.md](references/decoration-toolkit.md) — the 9 personalization techniques (badges, dividers, alignment, emoji, `<details>`, tables, dynamic cards, callouts, anchors) with copy-ready markup.
 - [references/visual-assets.md](references/visual-assets.md) — when & how to prepare project media and call image/diagram integrations.
 - [references/bilingual-architecture.md](references/bilingual-architecture.md) — evidence-led, Chinese/English paired diagram process and readability constraints.
+- [references/visual-composition.md](references/visual-composition.md) — evidence-bound badge plans, separators, image briefs, and component budgets.
 - [references/input-controls.md](references/input-controls.md) — `.readme-architectignore` syntax and evidence-boundary guidance.
 - [references/presentation-recipes.md](references/presentation-recipes.md) — composable presentation signals, component choices, badge styles, diagrams, and visual budgets.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
@@ -163,4 +183,5 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - `scripts/analyze_project.py` — build the structured project profile (Step 1).
 - `scripts/check_integrations.py` — detect available image routes, drawio (PATH/app bundle), Mermaid, and credentials **on the current machine**; prints the preferred banner route (Step 4). `--json` for machine output. Portable across macOS/Linux/Windows; extend skill search paths with `README_ARCHITECT_SKILL_ROOTS`.
 - `scripts/prepare_readme_assets.py` — rank, copy, and optionally center-crop project media into derived README assets with a JSON manifest (Step 4).
+- `scripts/plan_readme_visuals.py` — derive badge candidates, visual density, dividers, and requested assets from evidence (Step 3).
 - `scripts/validate_readme.py` — validate sections, TOC anchors, local paths, placeholders (Step 6).

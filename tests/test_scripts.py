@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ANALYZER = ROOT / "scripts" / "analyze_project.py"
 VALIDATOR = ROOT / "scripts" / "validate_readme.py"
 ASSET_PREPARER = ROOT / "scripts" / "prepare_readme_assets.py"
+VISUAL_PLANNER = ROOT / "scripts" / "plan_readme_visuals.py"
 
 
 class AnalyzeProjectTests(unittest.TestCase):
@@ -122,6 +123,46 @@ class AnalyzeProjectTests(unittest.TestCase):
             self.assertIn(asset["action"], {"copied", "center-cropped"})
             self.assertTrue((project / asset["output"]).is_file())
             self.assertEqual(source.read_bytes(), source_bytes)
+
+    def test_visual_planner_proposes_only_evidence_backed_badges_and_assets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            profile_path = Path(tmp) / "profile.json"
+            profile_path.write_text(
+                json.dumps({
+                    "archetype": "web-app",
+                    "owner": "example-org",
+                    "repo": "meal-planner",
+                    "ci_workflows": ["ci.yml"],
+                    "license": "MIT",
+                    "version": "1.2.3",
+                    "languages": ["TypeScript"],
+                    "frameworks": ["React"],
+                    "has_tests": True,
+                    "has_docker": True,
+                    "has_env_example": True,
+                    "media_candidates": [],
+                    "presentation_profile": {
+                        "signals": [{"key": "friendly-experience"}, {"key": "system-infrastructure"}],
+                        "recommended_components": ["friendly feature grid", "system architecture diagram"],
+                    },
+                }),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [sys.executable, str(VISUAL_PLANNER), "--profile", str(profile_path)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            visual_plan = json.loads(result.stdout)
+            labels = {item["label"] for item in visual_plan["badge_candidates"]}
+            self.assertTrue({"CI", "License", "Tests", "Container"}.issubset(labels))
+            self.assertEqual(visual_plan["separator"]["primary"], "generated-gradient-strip")
+            requests = {item["kind"] for item in visual_plan["visual_requests"]}
+            self.assertTrue({"banner", "contextual-illustration", "architecture-zh", "architecture-en", "gradient-divider"}.issubset(requests))
 
 
 class ValidateReadmeTests(unittest.TestCase):
