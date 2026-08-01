@@ -65,6 +65,13 @@ CLI_SIGNS = {"click", "typer", "argparse", "cobra", "commander", "clap", "yargs"
 ML_SIGNS = {"torch", "tensorflow", "transformers", "scikit-learn", "sklearn", "keras", "jax"}
 WEBAPP_SIGNS = {"react", "vue", "svelte", "@angular/core", "next", "nuxt", "django",
                 "flask", "fastapi", "rails", "laravel", "spring-boot"}
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".avif"}
+MEDIA_PRIORITY_TERMS = {
+    "screenshot": 80, "screen": 55, "demo": 55, "preview": 45, "hero": 40,
+    "banner": 35, "gallery": 30, "example": 20, "docs": 15, "documentation": 15,
+    "asset": 10, "image": 10, "media": 10,
+}
+MEDIA_DEPRIORITY_TERMS = {"icon", "favicon", "sprite", "avatar", "badge", "logo"}
 
 PRESENTATION_SIGNALS = (
     {
@@ -300,11 +307,28 @@ def walk_project(root, ignore_patterns):
     return langs, total_files, top_entries, all_rel
 
 
-def find_images(all_rel):
-    exts = (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp")
-    return [p for p in all_rel if p.lower().endswith(exts)
-            and ("asset" in p.lower() or "image" in p.lower() or "screenshot" in p.lower()
-                 or "doc" in p.lower() or "logo" in p.lower() or "banner" in p.lower())][:20]
+def find_media_candidates(all_rel):
+    """Rank visible project media for README reuse without inspecting image contents."""
+    candidates = []
+    for path in all_rel:
+        ext = os.path.splitext(path)[1].lower()
+        if ext not in IMAGE_EXTENSIONS:
+            continue
+        tokens = set(re.sub(r"[^a-z0-9]+", " ", path.lower()).split())
+        score = sum(weight for term, weight in MEDIA_PRIORITY_TERMS.items() if term in tokens)
+        score -= sum(30 for term in MEDIA_DEPRIORITY_TERMS if term in tokens)
+        if "screenshot" in tokens or "screen" in tokens:
+            kind = "screenshot"
+        elif "hero" in tokens or "banner" in tokens:
+            kind = "banner"
+        elif "gallery" in tokens or "photo" in tokens or "image" in tokens:
+            kind = "gallery"
+        elif "logo" in tokens or "icon" in tokens:
+            kind = "brand"
+        else:
+            kind = "image"
+        candidates.append({"path": path, "kind": kind, "score": score})
+    return sorted(candidates, key=lambda item: (-item["score"], item["path"]))[:40]
 
 
 def choose_archetype(profile):
@@ -478,7 +502,8 @@ def main():
         "has_code_of_conduct": "CODE_OF_CONDUCT.md" in top_entries,
         "has_citation": "CITATION.cff" in top_entries,
         "ignore_patterns": ignore_patterns,
-        "images": find_images(all_rel),
+        "images": [item["path"] for item in find_media_candidates(all_rel)],
+        "media_candidates": find_media_candidates(all_rel),
         "git_remote": remote_url,
         "owner": owner,
         "repo": repo,

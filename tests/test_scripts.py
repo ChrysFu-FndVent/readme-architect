@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import base64
 import subprocess
 import sys
 import tempfile
@@ -12,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ANALYZER = ROOT / "scripts" / "analyze_project.py"
 VALIDATOR = ROOT / "scripts" / "validate_readme.py"
+ASSET_PREPARER = ROOT / "scripts" / "prepare_readme_assets.py"
 
 
 class AnalyzeProjectTests(unittest.TestCase):
@@ -80,6 +82,46 @@ class AnalyzeProjectTests(unittest.TestCase):
             components = profile["presentation_profile"]["recommended_components"]
             self.assertIn("system architecture diagram", components)
             self.assertIn("trust-boundary or permission flow", components)
+
+    def test_prepare_readme_assets_derives_media_without_changing_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            source_dir = project / "docs" / "screenshots"
+            source_dir.mkdir(parents=True)
+            source = source_dir / "meal-plan.png"
+            source_bytes = base64.b64decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLJAAAAAElFTkSuQmCC"
+            )
+            source.write_bytes(source_bytes)
+            profile = project / "profile.json"
+            profile.write_text(
+                json.dumps({
+                    "name": "meal-planner",
+                    "description": "Recipe planning companion",
+                    "presentation_profile": {"matched_terms": ["recipe", "meal"]},
+                }),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable, str(ASSET_PREPARER), "--root", str(project),
+                    "--profile", str(profile), "--dest", "assets/readme/media",
+                    "--limit", "1", "--crop-ratio", "16:9", "--crop-width", "1600",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            manifest = json.loads(result.stdout)
+            self.assertEqual(len(manifest["assets"]), 1)
+            asset = manifest["assets"][0]
+            self.assertEqual(asset["source"], "docs/screenshots/meal-plan.png")
+            self.assertIn(asset["action"], {"copied", "center-cropped"})
+            self.assertTrue((project / asset["output"]).is_file())
+            self.assertEqual(source.read_bytes(), source_bytes)
 
 
 class ValidateReadmeTests(unittest.TestCase):

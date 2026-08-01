@@ -1,7 +1,7 @@
 # Visual Assets
 
-How to decide on, generate, and embed images/diagrams — always **derived from the project's real
-design language** (Step 2b), never generic clip-art. Save everything under
+How to decide on, prepare, generate, and embed images/diagrams — always **derived from the project's real
+design language** (Step 2b), never generic clip-art. Save all derived or generated assets under
 `<project-root>/assets/readme/` and embed with relative paths and descriptive alt text.
 
 Before calling any generator skill, open its own `SKILL.md` and follow its exact invocation and
@@ -17,6 +17,33 @@ with [presentation-recipes.md](presentation-recipes.md). Choose the useful asset
 project: real product media, a learning flow, a workflow or permission diagram, a data pipeline, a
 system map, or a contextual illustration. Signals can combine; presentation never changes the
 underlying factual evidence.
+
+---
+
+## Project Media Selection and Cropping
+
+Start with `media_candidates` in the analyzer profile, then visually inspect any candidate before
+use. Prefer real product screens, output examples, result plots, documented workflows, or domain
+media. Reject small UI fragments, avatars, icons, unrelated brand assets, and screens that expose
+personal data, tokens, endpoints, customer data, or internal dashboards.
+
+Use the bundled script to create copies under `assets/readme/media/`; its JSON output records every
+source, derived output, score, keyword hit, dimensions, and transformation. The source is immutable.
+
+```bash
+python3 "<skill-dir>/scripts/prepare_readme_assets.py" \
+  --root "<project-root>" \
+  --profile "<project-root>/.readme-architect/profile.json" \
+  --dest "assets/readme/media" --limit 3
+```
+
+For a README hero/gallery frame, inspect the image first and crop only when the subject remains
+fully visible. Add `--crop-ratio 16:9 --crop-width 1600`; the script prefers Pillow, then macOS
+`sips`, then ImageMagick, and otherwise safely copies the original with a manifest record. Use
+`--include path/to/image.png` to explicitly choose an image and `--dry-run` to review selection.
+
+Use the same copied image in both language bodies when it conveys the same fact. Write localized alt
+text and captions, but never make the image imply behavior not visible in the project.
 
 ---
 
@@ -63,6 +90,14 @@ Personality → art-style guidance:
 
 Keep the **same palette and style** across banner, logo, dividers, and the diagram accent color so
 the README reads as one designed system.
+
+When a host-native `imagegen` skill is available, use it before CLI-based image routes. Generate one
+asset at a time, inspect it, and keep only the approved result in `assets/readme/`. The prompt must
+include the actual project domain, 2-4 evidence-backed motifs/components, intended placement and
+aspect ratio, palette, style, and explicit exclusions: no fabricated UI, no logos or text unless
+requested, no watermark, no unsupported claims. Make at most one targeted revision for composition,
+subject fidelity, or readability. Existing screenshots, source artwork, and diagrams still take
+priority over generated illustration.
 
 ---
 

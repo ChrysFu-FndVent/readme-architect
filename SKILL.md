@@ -23,7 +23,7 @@ Before analysis, honor an optional `.readme-architectignore` file at the project
 python3 "<skill-dir>/scripts/analyze_project.py" --root "<project-root>" --out "<project-root>/.readme-architect/profile.json"
 ```
 
-The profile reports: project name, description, version, license, primary/secondary languages, package managers & manifests, detected frameworks, entrypoints/bin, scripts, test & CI presence, Docker, monorepo packages, existing docs/images, active ignore patterns, and the git remote (`owner/repo`) used for badges.
+The profile reports: project name, description, version, license, primary/secondary languages, package managers & manifests, detected frameworks, entrypoints/bin, scripts, test & CI presence, Docker, monorepo packages, existing docs/images, ranked `media_candidates`, active ignore patterns, and the git remote (`owner/repo`) used for badges.
 
 Read the JSON. Treat it as **evidence**, not gospel — confirm important facts against the actual files (open `package.json`, `pyproject.toml`, main entry, config) before writing claims. Never invent features, benchmarks, or usage that you cannot see in the code.
 
@@ -67,9 +67,28 @@ Start from the archetype's section set, then **include only sections you have re
 
 Build badges from the git remote and detected facts using [references/badges.md](references/badges.md). Never emit a badge that points at a resource that does not exist (e.g. no coverage badge without coverage).
 
-### Step 4 — Generate visual assets (conditional)
+### Step 4 — Prepare and generate visual assets (conditional)
 
 Decide per [references/visual-assets.md](references/visual-assets.md). Save all generated assets under `<project-root>/assets/readme/` and embed with **relative paths**.
+
+**Reuse real project media first.** Inspect the ranked `media_candidates` and select only images that
+show the documented product, result, workflow, or domain subject. Never use an icon, avatar, stock
+asset, secret-bearing screen, or unrelated decoration merely because it is available. Create a
+non-destructive README copy (and an auditable manifest) before embedding it:
+
+```bash
+python3 "<skill-dir>/scripts/prepare_readme_assets.py" \
+  --root "<project-root>" \
+  --profile "<project-root>/.readme-architect/profile.json" \
+  --dest "assets/readme/media" \
+  --limit 3
+```
+
+For a hero or gallery frame, request a center crop only after inspecting the source image and only
+when it preserves the relevant subject. `--crop-ratio 16:9 --crop-width 1600` creates a derived
+copy; the script never edits source media. Read the emitted JSON manifest, use its `output` paths and
+alt text that describes what is actually visible. See [references/visual-assets.md](references/visual-assets.md)
+for selection and privacy rules.
 
 **First, detect what's actually available** — never guess whether a companion skill or credential is present:
 
@@ -80,14 +99,10 @@ python3 "<skill-dir>/scripts/check_integrations.py" --json  # machine-readable
 
 This reports, per integration: image routes (`nano-banana-pro` / `nano-banana-flash` / `generate-gpt-image-2`) with `installed` + `usable_now` + what each `needs`, the drawio invocation (CLI on PATH **or** the macOS `draw.io.app` bundle), Mermaid (always available), which credentials are present (`XIAOHULI_API_KEY` env, `~/.codex/auth.json` `OPENAI_API_KEY`), and the **preferred banner route**. Let this report drive the choices below.
 
-- **Architecture / flow / sequence diagram.** Generate when the project has meaningful structure (backend+frontend, services, ML pipeline, multi-module data flow). Feed it the real components you found.
+- **Architecture / flow / sequence diagram.** Generate when the project has meaningful structure (backend+frontend, services, ML pipeline, multi-module data flow). Feed it the real components you found. Use [references/bilingual-architecture.md](references/bilingual-architecture.md): build one shared evidence map, then render a Chinese-labelled and English-labelled diagram with identical topology. Embed each in its matching language section (or render two localized Mermaid blocks).
   - If the report shows **drawio available**, build the `.drawio` XML for the detected diagram type (color nodes/edges with the Step 2b palette), export PNG via the reported invocation, and embed the PNG.
   - If drawio is **not** available, fall back to a native ` ```mermaid ` block (GitHub renders it inline, no binary needed) styled with the same palette via a `classDef`.
-- **Banner / logo / illustration.** Generate for `web-app` / `framework` archetypes, or when the project has strong branding and no existing logo. Derive the prompt from the project's real domain, name, and palette (Step 2b). Use the **preferred banner route** from the report, following this fallback chain:
-  1. `nano-banana-pro` (model `gemini-3-pro-image`) — best quality; needs `XIAOHULI_API_KEY`.
-  2. `nano-banana-flash` (model `gemini-3.1-flash-image`) — faster; also needs `XIAOHULI_API_KEY`.
-  3. `generate-gpt-image-2` — reuses the local `~/.codex/auth.json` `OPENAI_API_KEY`, so it works with no extra key.
-  Move down the chain on a failed/`503`/model-unavailable response or a missing credential.
+- **Banner / logo / illustration.** Generate only when real media cannot communicate the concept and the presentation signals call for an illustration. Derive a project evidence pack (domain, real components, audience, palette, motifs, forbidden claims) from Step 2b. If the host offers an `imagegen` skill, read and use it first: generate a bitmap asset, inspect the result, make at most one targeted revision, and move the approved file into `assets/readme/`. Otherwise use the **preferred banner route** from the integration report: `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2`. Move down the chain on a failed/`503`/model-unavailable response or a missing credential. Use [references/visual-assets.md](references/visual-assets.md) for the required prompt structure and acceptance check.
 - **Never fabricate product screenshots.** Use real screenshots only if they already exist in the repo. Image-gen is for banners/logos/abstract illustrations, not fake UI.
 
 **API-key handling.** nano-banana pro/flash require `XIAOHULI_API_KEY` in the environment. If the report shows both nano-banana skills installed but blocked on that key, and `generate-gpt-image-2` is usable, silently use the gpt-image-2 fallback. If **no** image route is usable and the user asked for a banner/logo, ask the user once to `export XIAOHULI_API_KEY=<key>` (or confirm skipping the image) — never hard-code, echo, or log the key value.
@@ -137,7 +152,8 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/style-archetypes.md](references/style-archetypes.md) — archetype → layout/tone/badge/section presets.
 - [references/badges.md](references/badges.md) — shields.io badge catalog by category.
 - [references/decoration-toolkit.md](references/decoration-toolkit.md) — the 9 personalization techniques (badges, dividers, alignment, emoji, `<details>`, tables, dynamic cards, callouts, anchors) with copy-ready markup.
-- [references/visual-assets.md](references/visual-assets.md) — when & how to call drawio / nano-banana-pro / gpt-image-2.
+- [references/visual-assets.md](references/visual-assets.md) — when & how to prepare project media and call image/diagram integrations.
+- [references/bilingual-architecture.md](references/bilingual-architecture.md) — evidence-led, Chinese/English paired diagram process and readability constraints.
 - [references/input-controls.md](references/input-controls.md) — `.readme-architectignore` syntax and evidence-boundary guidance.
 - [references/presentation-recipes.md](references/presentation-recipes.md) — composable presentation signals, component choices, badge styles, diagrams, and visual budgets.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
@@ -146,4 +162,5 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 
 - `scripts/analyze_project.py` — build the structured project profile (Step 1).
 - `scripts/check_integrations.py` — detect available image routes, drawio (PATH/app bundle), Mermaid, and credentials **on the current machine**; prints the preferred banner route (Step 4). `--json` for machine output. Portable across macOS/Linux/Windows; extend skill search paths with `README_ARCHITECT_SKILL_ROOTS`.
+- `scripts/prepare_readme_assets.py` — rank, copy, and optionally center-crop project media into derived README assets with a JSON manifest (Step 4).
 - `scripts/validate_readme.py` — validate sections, TOC anchors, local paths, placeholders (Step 6).

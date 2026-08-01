@@ -89,8 +89,7 @@
 - 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
   配图生成提示词。
 - 🌐 **默认双语** —— 单个 `README.md` 中完整中文正文在前、英文正文在后，标题和短简介只出现英文版一次。
-- 🖼️ **可选 AI 视觉** —— 架构/流程图与 AI 生成横幅，联动 `drawio`、`nano-banana-pro` →
-  `nano-banana-flash` → `generate-gpt-image-2` 链路，每一级都具备优雅降级（最终降到原生 Mermaid 图）。
+- 🖼️ **项目媒体与高质量视觉** —— 按相关性筛选并无损派生项目内真实图片，可选中心裁切且保留来源清单；架构图以同一证据模型渲染中英双版本。缺少真实素材时，才调用 `imagegen` 或 `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` 生成与项目匹配的插图，并经视觉复核后嵌入。
 - 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
   换到别人的环境、用别的 API 密钥照样跑通。
 - 🧹 **可控的分析范围** —— 通过 `.readme-architectignore` 排除敏感、生成或无关文件，让结论只基于应当公开的项目证据。
@@ -201,11 +200,13 @@ readme-architect/
 │   ├── decoration-toolkit.md   # 9 项个性化技术
 │   ├── input-controls.md       # 忽略规则与双语输出契约
 │   ├── presentation-recipes.md # 可组合信号驱动的徽章、图表与配图
-│   └── visual-assets.md        # drawio / nano-banana-pro / gpt-image-2 联动
+│   ├── bilingual-architecture.md # 清晰的中英配对架构图规范
+│   └── visual-assets.md        # 项目媒体 / drawio / imagegen 联动
 ├── templates/                  # 各项目类型的 README 骨架
 ├── scripts/
 │   ├── analyze_project.py      # 仓库 → profile.json（纯标准库）
 │   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
+│   ├── prepare_readme_assets.py # 筛选、派生和可选裁切项目图片
 │   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
 ├── tests/                      # 分析与双语布局的回归测试
 └── assets/readme/              # 生成的横幅与架构图
@@ -386,9 +387,11 @@ badges, tone, and illustrations chosen to fit *this* repository.
   and lets them drive **both** the layout styling **and** every image-generation prompt.
 - 🌐 **Bilingual by default** — one `README.md` with an English-only title and tagline, a Chinese body
   first, and an English body second, linked with anchors at the top.
-- 🖼️ **Optional AI visuals** — architecture/flow diagrams and AI-generated banners, wired to the
-  `drawio`, `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` chain, with graceful
-  fallback at every step (down to a native Mermaid diagram).
+- 🖼️ **Project media and high-quality visuals** — ranks and non-destructively derives real project
+  images with an auditable manifest and optional center crop; renders paired Chinese/English diagrams
+  from one evidence map. Only when real media is insufficient does it call `imagegen` or the
+  `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` chain for inspected,
+  project-matched illustrations.
 - 🖥️ **Portable, not machine-specific** — detects tools, credentials, and skill install roots on
   *the current* machine (macOS / Linux / Windows); runs the same on someone else's setup and API keys.
 - 🧹 **Controllable evidence scope** — `.readme-architectignore` excludes sensitive, generated, or
@@ -509,11 +512,13 @@ readme-architect/
 │   ├── decoration-toolkit.md   # the 9 personalization techniques
 │   ├── input-controls.md       # ignore rules and bilingual output contract
 │   ├── presentation-recipes.md # composable badges, diagrams, and visuals
-│   └── visual-assets.md        # drawio / nano-banana-pro / gpt-image-2 integration
+│   ├── bilingual-architecture.md # readable Chinese/English diagram pairs
+│   └── visual-assets.md        # project media / drawio / imagegen integration
 ├── templates/                  # per-archetype README skeletons
 ├── scripts/
 │   ├── analyze_project.py      # repo → profile.json (stdlib only)
 │   ├── check_integrations.py    # detect drawio / image skills / creds (any OS)
+│   ├── prepare_readme_assets.py # select, derive, and optionally crop project images
 │   └── validate_readme.py      # anchors / links / placeholders check
 ├── tests/                      # analyzer and bilingual-layout regression tests
 └── assets/readme/              # generated banner & architecture diagram
