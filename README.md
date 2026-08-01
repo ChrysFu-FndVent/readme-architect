@@ -75,8 +75,8 @@
 语气与插图都为**当前这个仓库**量身选择。
 
 > [!TIP]
-> 核心在于**契合**。精简的库会得到信息密集、以内容为先的 README；Web 应用则得到带横幅和功能网格的居中
-> 英雄区。两者都由代码中的真实证据驱动。
+> 核心在于**契合**。精简的库会得到信息密集、以内容为先的 README；Web 应用则得到带突出横幅、项目徽章、
+> 演示入口和功能网格的居中开场区（Hero section）。两者都由代码中的真实证据驱动。
 
 <a id="zh-features"></a>
 
@@ -148,8 +148,8 @@ flowchart LR
 |------|----------|------|----------|
 | `library` | 公开 API、已发布包、无应用入口 | 经典、密集 | 可选 logo |
 | `cli-tool` | `bin` 字段、argparse/click/cobra/commander | 紧凑、左对齐 | 流程图 |
-| `web-app` | React/Vue/Next/Django/Rails 应用、部署配置 | 居中英雄区 | 横幅 + 架构图 |
-| `framework` | 大型开发工具、插件生态、强品牌 | 品牌英雄区 | 横幅 + logo + 图 |
+| `web-app` | React/Vue/Next/Django/Rails 应用、部署配置 | 居中开场区：横幅、徽章、演示入口 | 横幅 + 架构图 |
+| `framework` | 大型开发工具、插件生态、强品牌 | 品牌开场区：横幅、徽章、文档入口 | 横幅 + logo + 图 |
 | `ml-ai` | notebook、torch/tf/transformers、数据集、论文 | 研究导向 | 流水线图 |
 | `monorepo` | pnpm/yarn/nx/turbo/cargo 工作区 | 包列表表格 | 模块关系图 |
 | `minimal` | 极小的配置/纯文档仓库 | 精简、单栏 | 无 |
@@ -311,7 +311,7 @@ python3 -m unittest discover -s tests -v
 ## 🙏 致谢
 
 - [standard-readme](https://github.com/RichardLitt/standard-readme) —— 章节排序规范。
-- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) —— 居中英雄区灵感。
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) —— 居中项目开场区的排版灵感。
 - [Shields.io](https://shields.io) —— 徽章。
 - [Mermaid](https://mermaid.js.org) —— 可在 GitHub 原生渲染的图表。
 
@@ -373,7 +373,8 @@ badges, tone, and illustrations chosen to fit *this* repository.
 
 > [!TIP]
 > The whole point is **fit**. A lean library gets a dense, information-first README; a web app gets a
-> centered hero with a banner and feature grid. Both are driven by evidence found in the code.
+> centered project opening (Hero section) with a prominent banner, badges, demo links, and a feature
+> grid. Both are driven by evidence found in the code.
 
 <a id="en-features"></a>
 
@@ -456,8 +457,8 @@ with a Chinese body followed by its English equivalent.
 |-----------|---------------|--------|-----------------|
 | `library` | public API, published package, no app entry | classic, dense | optional logo |
 | `cli-tool` | `bin` field, argparse/click/cobra/commander | compact, left | flowchart |
-| `web-app` | React/Vue/Next/Django/Rails app, deploy config | centered hero | banner + architecture |
-| `framework` | large dev tool, plugin ecosystem, strong brand | branded hero | banner + logo + diagram |
+| `web-app` | React/Vue/Next/Django/Rails app, deploy config | centered opening: banner, badges, demo links | banner + architecture |
+| `framework` | large dev tool, plugin ecosystem, strong brand | branded opening: banner, badges, docs links | banner + logo + diagram |
 | `ml-ai` | notebooks, torch/tf/transformers, datasets, paper | research-oriented | pipeline diagram |
 | `monorepo` | pnpm/yarn/nx/turbo/cargo workspaces | packages table | module map |
 | `minimal` | tiny config/docs-only repo | lean, single-column | none |
@@ -624,6 +625,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 ## 🙏 Acknowledgments
 
 - [standard-readme](https://github.com/RichardLitt/standard-readme) — section ordering conventions.
-- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) — centered-hero inspiration.
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) — centered project-opening layout inspiration.
 - [Shields.io](https://shields.io) — the badges.
 - [Mermaid](https://mermaid.js.org) — native diagrams that render on GitHub.

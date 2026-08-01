@@ -48,7 +48,7 @@ italic parens: `# Project Nice Name _(project-name)_`.
 
 ### Banner / Logo
 Optional, no heading, directly after the title. Link to a **local** image in the repo
-(`assets/readme/banner.png`). Use for centered-hero layouts. Generate via nano-banana-pro /
+(`assets/readme/banner.png`). Use for centered project-opening layouts. Generate via nano-banana-pro /
 gpt-image-2 when appropriate (see visual-assets.md).
 
 ### Badges
@@ -129,7 +129,7 @@ detected license.
 
 ## Reusable markup snippets
 
-Centered hero:
+Centered project opening (Hero section):
 ```html
 <div align="center">
   <img src="assets/readme/logo.png" alt="Logo" width="120" />

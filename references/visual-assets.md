@@ -37,7 +37,7 @@ python3 "<skill-dir>/scripts/prepare_readme_assets.py" \
   --dest "assets/readme/media" --limit 3
 ```
 
-For a README hero/gallery frame, inspect the image first and crop only when the subject remains
+For a README top-banner/gallery frame, inspect the image first and crop only when the subject remains
 fully visible. Add `--crop-ratio 16:9 --crop-width 1600`; the script prefers Pillow, then macOS
 `sips`, then ImageMagick, and otherwise safely copies the original with a manifest record. Use
 `--include path/to/image.png` to explicitly choose an image and `--dry-run` to review selection.
@@ -54,7 +54,7 @@ text and captions, but never make the image imply behavior not visible in the pr
 | Architecture diagram | `drawio` | multi-component system, services, multi-module data flow | single-file/trivial project |
 | Flowchart | `drawio` | CLI/pipeline/step process worth showing | no meaningful flow |
 | Sequence / ERD / class | `drawio` | request lifecycle / DB schema / core class model is central | not central to understanding |
-| Banner (hero) | `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` | web-app / framework, or strong brand & no banner exists | lean library/minimal, or a banner already exists |
+| Banner (project opening) | `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` | web-app / framework, or strong brand & no banner exists | lean library/minimal, or a banner already exists |
 | Logo | `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` | no logo exists and archetype benefits from branding | a logo already exists |
 | Divider / motif strip | `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` | rich layout wants section separators | lean layouts |
 | Screenshots / demo GIF | none (use real files) | the repo already contains them | — never synthesize fake UI |
@@ -182,14 +182,14 @@ node "<generate-gpt-image-2-dir>/scripts/gpt_image_2.mjs" generate \
 
 ## Embedding patterns
 
-Centered banner at the top of a hero:
+Centered banner at the top of a project opening:
 ```html
 <div align="center">
   <img src="assets/readme/banner.png" alt="<Project> banner" width="100%" />
 </div>
 ```
 
-Logo in hero:
+Logo in a project opening:
 ```html
 <img src="assets/readme/logo.png" alt="<Project> logo" width="120" />
 ```

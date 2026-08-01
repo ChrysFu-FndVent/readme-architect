@@ -4,7 +4,7 @@ shields.io badge patterns by category. Replace `OWNER`, `REPO`, `PACKAGE` with r
 analyzer profile (git remote → `owner/repo`; package name from the manifest). Keep one consistent
 `style` across the whole README. Only emit a badge that resolves to a **real** resource.
 
-`style` options: `flat` (default, dense/library), `flat-square`, `for-the-badge` (bold, hero
+`style` options: `flat` (default, dense/library), `flat-square`, `for-the-badge` (bold, project-opening
 layouts), `plastic`, `social`.
 
 ## Repo / community (dynamic, GitHub)
@@ -102,6 +102,6 @@ you author, to reinforce the design language.
 
 ## Recommended ordering
 
-`build/CI → coverage → version → downloads → license → community → chat/social`. In hero layouts,
+`build/CI → coverage → version → downloads → license → community → chat/social`. In project-opening layouts,
 use `for-the-badge` and center them; in library layouts, use `flat` on their own line under the
 tagline.

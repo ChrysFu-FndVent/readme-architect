@@ -43,15 +43,15 @@ entrypoint, has `exports`/`__init__.py`/`lib.rs`.
 **Signals:** React/Vue/Svelte/Angular/Next/Nuxt/Django/Rails/Laravel/Spring app, `public/` or
 `src/pages`, Dockerfile + serve, `.env.example`, deploy config (vercel/netlify/fly/render).
 
-- **Layout:** **centered-hero** (logo/banner + badges + tagline + demo links), then sections.
+- **Layout:** a **centered project opening** (also called a Hero section: logo/banner + badges + tagline + demo links), then sections.
 - **Tone:** friendly, moderate emoji.
 - **Badges:** build/deploy, license, live-demo, tech-stack (static Built-With badges).
-- **Sections:** Hero → TOC → About → Features (grid) → Demo/Screenshots → Architecture → Built With →
+- **Sections:** Project opening → TOC → About → Features (grid) → Demo/Screenshots → Architecture → Built With →
   Getting Started (Prereqs/Install) → Usage → Configuration → Deployment → Roadmap → Contributing →
   License → Acknowledgments.
 - **Visuals:** **banner** (nano-banana-pro) + **architecture diagram** (drawio); real screenshots if
   present.
-- **Decoration:** hero block, feature grid table, dividers, emoji headings, star-history card,
+- **Decoration:** project-opening block, feature grid table, dividers, emoji headings, star-history card,
   callouts.
 
 ## framework
@@ -59,11 +59,11 @@ entrypoint, has `exports`/`__init__.py`/`lib.rs`.
 **Signals:** large dev-facing tool/framework, plugin/ecosystem dirs, docs site, many stars, strong
 brand name, `packages/` with a core.
 
-- **Layout:** **centered-hero** with strong branding, big logo, prominent CTAs (Docs / Quickstart /
-  Discord).
+- **Layout:** a **centered branded project opening** (big logo, banner, badges, and prominent Docs /
+  Quickstart / Discord links).
 - **Tone:** polished, confident, moderate emoji.
 - **Badges:** version, downloads, build, coverage, chat/community, sponsors, license.
-- **Sections:** Hero → TOC → About → Why/Features (grid) → Quick Start → Architecture → Ecosystem/
+- **Sections:** Project opening → TOC → About → Why/Features (grid) → Quick Start → Architecture → Ecosystem/
   Plugins → Docs links → Benchmarks (if real) → Roadmap → Contributing → Sponsors → License.
 - **Visuals:** **banner + logo** (nano-banana-pro), **architecture diagram** (drawio), contributors
   montage.
@@ -101,7 +101,7 @@ their own manifests.
 
 **Signals:** very few files, config/dotfiles/docs-only repo, no build system.
 
-- **Layout:** lean, single-column, no hero.
+- **Layout:** lean, single-column, no project opening.
 - **Tone:** neutral.
 - **Badges:** license only (and maybe stars).
 - **Sections:** Title → Tagline → About → Usage → License.
@@ -116,8 +116,8 @@ their own manifests.
 |---|---|---|---|---|---|
 | cli-tool | left | low | flat | no | flowchart |
 | library | left | minimal | flat | no | optional |
-| web-app | hero | moderate | for-the-badge | yes | architecture |
-| framework | hero | moderate | for-the-badge | yes | architecture |
+| web-app | centered opening | moderate | for-the-badge | yes | architecture |
+| framework | branded opening | moderate | for-the-badge | yes | architecture |
 | ml-ai | left/teaser | low | flat | optional | pipeline |
 | monorepo | left | low | flat | no | module map |
 | minimal | left | none | flat | no | none |

@@ -53,7 +53,7 @@ title/tagline, newline- or space-delimited. Full catalog in [badges.md](badges.m
   ![Made with](https://img.shields.io/badge/Made%20with-TypeScript-3178C6?logo=typescript&logoColor=white)
   ```
 - Pick one `style=` (`flat`, `flat-square`, `for-the-badge`) and use it consistently. `for-the-badge`
-  suits centered-hero layouts; `flat` suits dense library READMEs.
+  suits centered project-opening layouts; `flat` suits dense library READMEs.
 
 ## 2. Heading & divider beautification (centered titles + separators)
 
@@ -207,7 +207,7 @@ For long READMEs, add a jump menu at the top and back-to-top links.
   the baseline richness, the design brief (palette/personality/motifs) sets the actual colors, emoji,
   and glyphs. When they conflict, honor the project's real tone.
 - Don't stack every technique on one README. Choose per archetype: libraries stay lean (badges +
-  TOC + tables + code highlight); web-apps/frameworks go rich (hero, emoji, feature grid, dynamic
+  TOC + tables + code highlight); web-apps/frameworks go rich (project opening, emoji, feature grid, dynamic
   cards, dividers).
 - Every dynamic widget and badge must point at a **real** owner/repo/package. If the repo isn't on
   GitHub yet, prefer static badges and skip live cards.
