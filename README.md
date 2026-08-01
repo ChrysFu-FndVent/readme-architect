@@ -94,6 +94,7 @@
 - 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
   换到别人的环境、用别的 API 密钥照样跑通。
 - 🧹 **可控的分析范围** —— 通过 `.readme-architectignore` 排除敏感、生成或无关文件，让结论只基于应当公开的项目证据。
+- 🎭 **项目匹配的展示方案** —— 从项目名称、简介和文件路径中提取可核对的领域信号：食谱/健康项目可采用亲和的徽章、功能卡片和相关插图；工作台与 AI 系统则优先使用架构、流程或数据管线图。
 - 🧰 **9 项装饰工具箱** —— 徽章、对齐 HTML 块、分割线、恰当的 emoji、可折叠 `<details>`、表格、
   动态数据卡片、`> [!NOTE]` 提示块以及锚点导航。
 - ✅ **内置校验器** —— 检查锚点可解析、本地资源存在、无模板占位符残留；默认双语布局还会检查共享英文标题、语言切换和中文优先顺序。
@@ -199,6 +200,7 @@ readme-architect/
 │   ├── badges.md               # shields.io 徽章目录
 │   ├── decoration-toolkit.md   # 9 项个性化技术
 │   ├── input-controls.md       # 忽略规则与双语输出契约
+│   ├── presentation-recipes.md # 按领域选择徽章、图表与配图
 │   └── visual-assets.md        # drawio / nano-banana-pro / gpt-image-2 联动
 ├── templates/                  # 各项目类型的 README 骨架
 ├── scripts/
@@ -216,7 +218,8 @@ readme-architect/
 [style-archetypes](references/style-archetypes.md) ·
 [decoration-toolkit](references/decoration-toolkit.md) ·
 [visual-assets](references/visual-assets.md) ·
-[input-controls](references/input-controls.md)。
+[input-controls](references/input-controls.md) ·
+[presentation-recipes](references/presentation-recipes.md)。
 
 <a id="zh-getting-started"></a>
 
@@ -390,6 +393,9 @@ badges, tone, and illustrations chosen to fit *this* repository.
   *the current* machine (macOS / Linux / Windows); runs the same on someone else's setup and API keys.
 - 🧹 **Controllable evidence scope** — `.readme-architectignore` excludes sensitive, generated, or
   irrelevant paths so claims are based only on documentation-worthy project evidence.
+- 🎭 **Project-matched presentation recipes** — verified domain signals from names, descriptions, and
+  paths guide the components: recipe/health projects can use friendly badges and illustrations, while
+  workbenches and AI systems prioritize architecture, workflow, or pipeline diagrams.
 - 🧰 **9-technique decoration toolkit** — badges, aligned HTML blocks, dividers, tasteful emoji,
   collapsible `<details>`, tables, live data cards, `> [!NOTE]` callouts, and anchor navigation.
 - ✅ **Built-in validator** — checks anchors, local assets, and leaked placeholders; default bilingual
@@ -501,6 +507,7 @@ readme-architect/
 │   ├── badges.md               # shields.io badge catalog
 │   ├── decoration-toolkit.md   # the 9 personalization techniques
 │   ├── input-controls.md       # ignore rules and bilingual output contract
+│   ├── presentation-recipes.md # domain-aware badges, diagrams, and visuals
 │   └── visual-assets.md        # drawio / nano-banana-pro / gpt-image-2 integration
 ├── templates/                  # per-archetype README skeletons
 ├── scripts/
@@ -518,7 +525,8 @@ Reference files worth reading: [SKILL.md](SKILL.md) ·
 [style-archetypes](references/style-archetypes.md) ·
 [decoration-toolkit](references/decoration-toolkit.md) ·
 [visual-assets](references/visual-assets.md) ·
-[input-controls](references/input-controls.md).
+[input-controls](references/input-controls.md) ·
+[presentation-recipes](references/presentation-recipes.md).
 
 <a id="en-getting-started"></a>
 

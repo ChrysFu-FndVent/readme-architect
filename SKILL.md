@@ -57,6 +57,8 @@ The archetype decides the skeleton; the project's own characteristics decide the
 
 Record these as a short design brief and pass it into Step 4 (visuals) and the decoration choices in Step 5, so illustrations and typography feel designed *for this repo*, not generic. Never fabricate a brand color or motif that contradicts the code.
 
+The analyzer also emits a `presentation_profile` from visible metadata and paths. Use it as a **suggestion**, then verify its matched terms against the project before choosing a richer presentation. Apply the corresponding recipe in [references/presentation-recipes.md](references/presentation-recipes.md): food/health projects can use friendly visual treatment, while workbenches and AI systems prioritize architecture, workflow, and pipeline diagrams. Never infer medical outcomes, operational scale, or product behavior from a presentation profile alone.
+
 ### Step 3 — Select components (sections)
 
 Start from the archetype's section set, then **include only sections you have real content for** (from Step 1 evidence). Canonical ordering and per-section rules live in [references/section-library.md](references/section-library.md). Core ordering baseline (omit optional sections without content):
@@ -137,6 +139,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/decoration-toolkit.md](references/decoration-toolkit.md) — the 9 personalization techniques (badges, dividers, alignment, emoji, `<details>`, tables, dynamic cards, callouts, anchors) with copy-ready markup.
 - [references/visual-assets.md](references/visual-assets.md) — when & how to call drawio / nano-banana-pro / gpt-image-2.
 - [references/input-controls.md](references/input-controls.md) — `.readme-architectignore` syntax and evidence-boundary guidance.
+- [references/presentation-recipes.md](references/presentation-recipes.md) — domain-aware components, badge styles, diagrams, and visual budgets.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
 
 ## Scripts

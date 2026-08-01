@@ -21,7 +21,9 @@ class AnalyzeProjectTests(unittest.TestCase):
             (project / "src").mkdir()
             (project / "internal").mkdir()
             (project / "nested").mkdir()
-            (project / "package.json").write_text('{"name":"demo"}', encoding="utf-8")
+            (project / "package.json").write_text(
+                '{"name":"demo","description":"Recipe nutrition planner"}', encoding="utf-8"
+            )
             (project / "src" / "app.py").write_text("print('ok')\n", encoding="utf-8")
             (project / "internal" / "secret.py").write_text("token = 'private'\n", encoding="utf-8")
             (project / "nested" / "config.yaml").write_text("nested: true\n", encoding="utf-8")
@@ -44,6 +46,8 @@ class AnalyzeProjectTests(unittest.TestCase):
             self.assertNotIn("internal", profile["top_level"])
             self.assertEqual(profile["total_files"], 4)
             self.assertEqual(profile["language_counts"], {"Python": 1})
+            self.assertEqual(profile["presentation_profile"]["key"], "food-health")
+            self.assertEqual(profile["presentation_profile"]["matched_terms"], ["nutrition", "recipe"])
 
 
 class ValidateReadmeTests(unittest.TestCase):

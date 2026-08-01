@@ -66,6 +66,30 @@ ML_SIGNS = {"torch", "tensorflow", "transformers", "scikit-learn", "sklearn", "k
 WEBAPP_SIGNS = {"react", "vue", "svelte", "@angular/core", "next", "nuxt", "django",
                 "flask", "fastapi", "rails", "laravel", "spring-boot"}
 
+PRESENTATION_RECIPES = (
+    {
+        "key": "food-health",
+        "terms": ("recipe", "cookbook", "meal", "nutrition", "diet", "food", "health", "wellness", "fitness", "workout"),
+        "tone": "friendly and approachable",
+        "badge_style": "for-the-badge or flat-square",
+        "components": ["friendly feature grid", "rounded badges", "optional illustrative banner"],
+    },
+    {
+        "key": "operational-workbench",
+        "terms": ("workbench", "dashboard", "workspace", "admin", "operations", "workflow", "crm", "backoffice"),
+        "tone": "structured and operational",
+        "badge_style": "flat or flat-square",
+        "components": ["architecture diagram", "workflow diagram", "configuration and deployment tables"],
+    },
+    {
+        "key": "ai-system",
+        "terms": ("agent", "llm", "rag", "model", "inference", "prompt", "machine learning", "artificial intelligence"),
+        "tone": "technical and legible",
+        "badge_style": "flat-square",
+        "components": ["system or pipeline diagram", "capability table", "limitations section when evidenced"],
+    },
+)
+
 SPDX_HINTS = [
     ("MIT License", "MIT"), ("Apache License", "Apache-2.0"), ("GNU GENERAL PUBLIC LICENSE", "GPL-3.0"),
     ("BSD 3-Clause", "BSD-3-Clause"), ("BSD 2-Clause", "BSD-2-Clause"),
@@ -266,6 +290,32 @@ def choose_archetype(profile):
     return "library" if profile["package_managers"] else "minimal"
 
 
+def derive_presentation_profile(name, description, all_rel, frameworks):
+    """Suggest a presentation recipe from visible metadata and path names only."""
+    corpus = " ".join([name or "", description or "", *all_rel, *frameworks]).lower()
+    candidates = []
+    for recipe in PRESENTATION_RECIPES:
+        matches = sorted({term for term in recipe["terms"] if term in corpus})
+        if matches:
+            candidates.append((len(matches), recipe, matches))
+    if not candidates:
+        return {
+            "key": "neutral",
+            "matched_terms": [],
+            "tone": "match the existing project voice",
+            "badge_style": "match the archetype default",
+            "recommended_components": [],
+        }
+    _, recipe, matches = max(candidates, key=lambda item: item[0])
+    return {
+        "key": recipe["key"],
+        "matched_terms": matches,
+        "tone": recipe["tone"],
+        "badge_style": recipe["badge_style"],
+        "recommended_components": recipe["components"],
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
@@ -376,6 +426,9 @@ def main():
         "_rel": all_rel[:1000],
     }
     profile["archetype"] = choose_archetype(profile)
+    profile["presentation_profile"] = derive_presentation_profile(
+        name, description, all_rel, frameworks
+    )
 
     # drop internal keys from output for cleanliness but keep a trimmed top listing
     profile["top_level"] = profile.pop("_top")
