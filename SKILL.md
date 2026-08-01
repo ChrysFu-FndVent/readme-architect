@@ -17,13 +17,13 @@ Default output: one bilingual **`README.md`**. Render the document title and its
 
 ### Step 1 — Analyze the project
 
-Run the analyzer to build a structured profile (stdlib Python only, no install):
+Before analysis, honor an optional `.readme-architectignore` file at the project root. It uses the documented gitignore-style subset in [references/input-controls.md](references/input-controls.md) so users can exclude sensitive, generated, or irrelevant paths from the evidence set. Then run the analyzer to build a structured profile (stdlib Python only, no install):
 
 ```bash
 python3 "<skill-dir>/scripts/analyze_project.py" --root "<project-root>" --out "<project-root>/.readme-architect/profile.json"
 ```
 
-The profile reports: project name, description, version, license, primary/secondary languages, package managers & manifests, detected frameworks, entrypoints/bin, scripts, test & CI presence, Docker, monorepo packages, existing docs/images, and the git remote (`owner/repo`) used for badges.
+The profile reports: project name, description, version, license, primary/secondary languages, package managers & manifests, detected frameworks, entrypoints/bin, scripts, test & CI presence, Docker, monorepo packages, existing docs/images, active ignore patterns, and the git remote (`owner/repo`) used for badges.
 
 Read the JSON. Treat it as **evidence**, not gospel — confirm important facts against the actual files (open `package.json`, `pyproject.toml`, main entry, config) before writing claims. Never invent features, benchmarks, or usage that you cannot see in the code.
 
@@ -112,10 +112,10 @@ Follow the chosen template in `templates/` for markup patterns (centered hero bl
 ### Step 6 — Validate
 
 ```bash
-python3 "<skill-dir>/scripts/validate_readme.py" "<project-root>/README.md"
+python3 "<skill-dir>/scripts/validate_readme.py" --bilingual "<project-root>/README.md"
 ```
 
-This checks: required sections present, TOC anchors resolve, local image/link paths exist on disk, and no leftover template placeholders (`<...>`, `TODO`, `example.com`). Fix every reported issue before finishing.
+This checks: required sections present, TOC anchors resolve, local image/link paths exist on disk, and no leftover template placeholders (`<...>`, `TODO`, `example.com`). In default bilingual mode it also checks the shared title, language switch, Chinese-first ordering, and absence of the obsolete `README.zh-CN.md` link. Fix every reported issue before finishing.
 
 ### Step 7 — Report
 
@@ -136,6 +136,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/badges.md](references/badges.md) — shields.io badge catalog by category.
 - [references/decoration-toolkit.md](references/decoration-toolkit.md) — the 9 personalization techniques (badges, dividers, alignment, emoji, `<details>`, tables, dynamic cards, callouts, anchors) with copy-ready markup.
 - [references/visual-assets.md](references/visual-assets.md) — when & how to call drawio / nano-banana-pro / gpt-image-2.
+- [references/input-controls.md](references/input-controls.md) — `.readme-architectignore` syntax and evidence-boundary guidance.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
 
 ## Scripts

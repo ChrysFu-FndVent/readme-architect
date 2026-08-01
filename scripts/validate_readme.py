@@ -2,13 +2,14 @@
 """Validate a generated README: TOC anchors, local asset links, leftover placeholders.
 
 Standard library only. Exit code 0 = clean, 1 = issues found.
-Usage: python3 validate_readme.py path/to/README.md
+Usage: python3 validate_readme.py [--bilingual] path/to/README.md
 """
 from __future__ import annotations
 
 import os
 import re
 import sys
+import argparse
 
 PLACEHOLDER_PATTERNS = [
     (re.compile(r"\bTODO\b"), "leftover TODO"),
@@ -51,11 +52,13 @@ def strip_code_blocks(lines):
     return out
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("usage: validate_readme.py <README.md>", file=sys.stderr)
-        return 2
-    path = os.path.abspath(sys.argv[1])
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--bilingual", action="store_true",
+                        help="enforce the default Chinese-first, English-second layout")
+    parser.add_argument("path", help="README file to validate")
+    args = parser.parse_args(argv)
+    path = os.path.abspath(args.path)
     if not os.path.isfile(path):
         print(f"ERROR: file not found: {path}", file=sys.stderr)
         return 2
@@ -114,13 +117,35 @@ def main():
             issues.append(f"{label}")
 
     # 5. structural warnings
-    if not re.search(r"^#\s+", content, re.M):
+    if not re.search(r"^#\s+", content, re.M) and not re.search(r"<h1\b", content, re.I):
         issues.append("no top-level H1 title found")
     if len(raw_lines) > 100 and "table of contents" not in content.lower() \
             and not re.search(r"<summary>[^<]*contents", content, re.I):
         warnings.append("README > 100 lines but no Table of Contents detected")
     if "license" not in content.lower():
         warnings.append("no License section detected")
+
+    # 6. default bilingual output contract
+    if args.bilingual:
+        zh_matches = list(re.finditer(r'<a\s+(?:id|name)=["\']简体中文["\']', content, re.I))
+        en_matches = list(re.finditer(r'<a\s+(?:id|name)=["\']english["\']', content, re.I))
+        if len(zh_matches) != 1:
+            issues.append("bilingual layout requires exactly one 简体中文 anchor")
+        if len(en_matches) != 1:
+            issues.append("bilingual layout requires exactly one english anchor")
+        if zh_matches and en_matches and zh_matches[0].start() > en_matches[0].start():
+            issues.append("bilingual layout must place the Chinese body before the English body")
+        switch = re.search(r'href=["\']#简体中文["\'].*href=["\']#english["\']', content, re.I | re.S)
+        if not switch:
+            issues.append("bilingual layout requires a Chinese/English anchor switch")
+        markdown_h1s = [ln for ln in code_stripped if re.match(r"^#\s+", ln)]
+        html_h1s = re.findall(r"<h1\b", content, re.I)
+        if len(markdown_h1s) + len(html_h1s) != 1:
+            issues.append("bilingual layout requires exactly one shared H1 title")
+        if zh_matches and re.search(r"<h1\b|^#\s+", content[:zh_matches[0].start()], re.I | re.M) is None:
+            issues.append("the shared H1 title must appear before the Chinese body")
+        if "README.zh-CN.md" in prose:
+            issues.append("default bilingual output must not link to README.zh-CN.md")
 
     # report
     print(f"Validating: {path}")

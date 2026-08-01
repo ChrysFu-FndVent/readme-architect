@@ -7,6 +7,7 @@ frameworks, entrypoints, docs/images, git remote, and an archetype hint.
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
 import os
 import re
@@ -79,6 +80,53 @@ def read_text(path, limit=200_000):
             return f.read(limit)
     except OSError:
         return ""
+
+
+def read_ignore_patterns(root):
+    """Read optional repository-local filters without inheriting .gitignore."""
+    path = os.path.join(root, ".readme-architectignore")
+    if not os.path.isfile(path):
+        return []
+    patterns = []
+    for line in read_text(path).splitlines():
+        line = line.strip()
+        if line and not line.startswith("#"):
+            patterns.append(line)
+    return patterns
+
+
+def is_ignored(rel_path, is_dir, patterns):
+    """Apply a small, documented subset of gitignore-style matching rules."""
+    rel_path = rel_path.replace(os.sep, "/").strip("/")
+    ignored = False
+    for raw_pattern in patterns:
+        negated = raw_pattern.startswith("!")
+        pattern = raw_pattern[1:] if negated else raw_pattern
+        root_only = pattern.startswith("/")
+        pattern = pattern.lstrip("/")
+        directory_only = pattern.endswith("/")
+        pattern = pattern.rstrip("/")
+        if not pattern:
+            continue
+        candidates = [pattern]
+        if pattern.startswith("**/"):
+            candidates.append(pattern[3:])
+        matched = False
+        for candidate in candidates:
+            if directory_only:
+                if root_only or "/" in candidate:
+                    matched = rel_path == candidate or rel_path.startswith(candidate + "/")
+                else:
+                    matched = candidate in rel_path.split("/")
+            elif root_only or "/" in candidate:
+                matched = fnmatch.fnmatchcase(rel_path, candidate)
+            else:
+                matched = fnmatch.fnmatchcase(os.path.basename(rel_path), candidate)
+            if matched:
+                break
+        if matched and (not directory_only or is_dir or "/" in rel_path):
+            ignored = not negated
+    return ignored
 
 
 def detect_license(root, manifest_data):
@@ -155,24 +203,34 @@ def get_git_remote(root):
     return url, None, None
 
 
-def walk_project(root):
+def walk_project(root, ignore_patterns):
     langs = Counter()
     total_files = 0
     top_entries = set()
     all_rel = []
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".git")]
+        rel_dir = os.path.relpath(dirpath, root)
+        kept_dirs = []
+        for d in dirnames:
+            rel = os.path.normpath(os.path.join(rel_dir, d)) if rel_dir != "." else d
+            if d in SKIP_DIRS or d.startswith(".git") or is_ignored(rel, True, ignore_patterns):
+                continue
+            kept_dirs.append(d)
+        dirnames[:] = kept_dirs
         depth = os.path.relpath(dirpath, root).count(os.sep)
         if os.path.relpath(dirpath, root) == ".":
             top_entries.update(dirnames)
             top_entries.update(filenames)
         for fn in filenames:
+            rel = os.path.normpath(os.path.join(rel_dir, fn)) if rel_dir != "." else fn
+            if is_ignored(rel, False, ignore_patterns):
+                continue
             total_files += 1
             ext = os.path.splitext(fn)[1].lower()
             if ext in LANG_BY_EXT:
                 langs[LANG_BY_EXT[ext]] += 1
             if depth < 3:
-                all_rel.append(os.path.relpath(os.path.join(dirpath, fn), root))
+                all_rel.append(rel)
     return langs, total_files, top_entries, all_rel
 
 
@@ -215,7 +273,8 @@ def main():
     args = ap.parse_args()
     root = os.path.abspath(args.root)
 
-    langs, total_files, top_entries, all_rel = walk_project(root)
+    ignore_patterns = read_ignore_patterns(root)
+    langs, total_files, top_entries, all_rel = walk_project(root, ignore_patterns)
 
     manifest_data = {}
     package_managers = []
@@ -307,6 +366,7 @@ def main():
         "has_contributing": "CONTRIBUTING.md" in top_entries,
         "has_code_of_conduct": "CODE_OF_CONDUCT.md" in top_entries,
         "has_citation": "CITATION.cff" in top_entries,
+        "ignore_patterns": ignore_patterns,
         "images": find_images(all_rel),
         "git_remote": remote_url,
         "owner": owner,

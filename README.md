@@ -93,9 +93,10 @@
   `nano-banana-flash` → `generate-gpt-image-2` 链路，每一级都具备优雅降级（最终降到原生 Mermaid 图）。
 - 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
   换到别人的环境、用别的 API 密钥照样跑通。
+- 🧹 **可控的分析范围** —— 通过 `.readme-architectignore` 排除敏感、生成或无关文件，让结论只基于应当公开的项目证据。
 - 🧰 **9 项装饰工具箱** —— 徽章、对齐 HTML 块、分割线、恰当的 emoji、可折叠 `<details>`、表格、
   动态数据卡片、`> [!NOTE]` 提示块以及锚点导航。
-- ✅ **内置校验器** —— 检查锚点可解析、本地资源存在、无模板占位符残留。
+- ✅ **内置校验器** —— 检查锚点可解析、本地资源存在、无模板占位符残留；默认双语布局还会检查共享英文标题、语言切换和中文优先顺序。
 
 <a id="zh-how-it-works"></a>
 
@@ -125,7 +126,7 @@ flowchart LR
 ## 🏗️ 架构
 
 一个纯标准库编排器驱动整条流水线，读取内置的 references/templates，并**仅在探测到时**才调用伴生技能
-（每个都有优雅降级），最终产出中英两份 README。
+（每个都有优雅降级），最终产出一份中文正文在前、英文正文在后的 README。
 
 <div align="center">
 
@@ -197,12 +198,14 @@ readme-architect/
 │   ├── style-archetypes.md     # 项目类型 → 排版/语气/徽章/章节预设
 │   ├── badges.md               # shields.io 徽章目录
 │   ├── decoration-toolkit.md   # 9 项个性化技术
+│   ├── input-controls.md       # 忽略规则与双语输出契约
 │   └── visual-assets.md        # drawio / nano-banana-pro / gpt-image-2 联动
 ├── templates/                  # 各项目类型的 README 骨架
 ├── scripts/
 │   ├── analyze_project.py      # 仓库 → profile.json（纯标准库）
 │   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
 │   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
+├── tests/                      # 分析与双语布局的回归测试
 └── assets/readme/              # 生成的横幅与架构图
 ```
 
@@ -212,7 +215,8 @@ readme-architect/
 [section-library](references/section-library.md) ·
 [style-archetypes](references/style-archetypes.md) ·
 [decoration-toolkit](references/decoration-toolkit.md) ·
-[visual-assets](references/visual-assets.md)。
+[visual-assets](references/visual-assets.md) ·
+[input-controls](references/input-controls.md)。
 
 <a id="zh-getting-started"></a>
 
@@ -243,11 +247,20 @@ cp -r readme-architect ~/.claude/skills/
 技能会接管后续工作。你也可以直接运行辅助脚本：
 
 ```bash
+# 可选：排除不应作为 README 依据的路径
+cat > .readme-architectignore <<'EOF'
+internal/
+*.snapshot
+EOF
+
 # 1. 把仓库分析成结构化 profile
 python3 scripts/analyze_project.py --root . --out .readme-architect/profile.json
 
-# 2. 校验一份完成的 README
-python3 scripts/validate_readme.py README.md
+# 2. 校验默认的中英双语 README
+python3 scripts/validate_readme.py --bilingual README.md
+
+# 3. 运行内置回归测试
+python3 -m unittest discover -s tests -v
 ```
 
 > [!TIP]
@@ -375,10 +388,12 @@ badges, tone, and illustrations chosen to fit *this* repository.
   fallback at every step (down to a native Mermaid diagram).
 - 🖥️ **Portable, not machine-specific** — detects tools, credentials, and skill install roots on
   *the current* machine (macOS / Linux / Windows); runs the same on someone else's setup and API keys.
+- 🧹 **Controllable evidence scope** — `.readme-architectignore` excludes sensitive, generated, or
+  irrelevant paths so claims are based only on documentation-worthy project evidence.
 - 🧰 **9-technique decoration toolkit** — badges, aligned HTML blocks, dividers, tasteful emoji,
   collapsible `<details>`, tables, live data cards, `> [!NOTE]` callouts, and anchor navigation.
-- ✅ **Built-in validator** — checks that anchors resolve, local assets exist, and no template
-  placeholders leak into the output.
+- ✅ **Built-in validator** — checks anchors, local assets, and leaked placeholders; default bilingual
+  output also verifies the shared English title, language switch, and Chinese-first body order.
 
 <a id="en-how-it-works"></a>
 
@@ -408,7 +423,8 @@ separation is what makes each README feel bespoke rather than templated.
 ## 🏗️ Architecture
 
 One stdlib orchestrator drives the pipeline, reads from bundled references/templates, and calls
-companion skills **only when they're detected** — each with a graceful fallback — to emit both READMEs.
+companion skills **only when they're detected** — each with a graceful fallback — to emit one README
+with a Chinese body followed by its English equivalent.
 
 <div align="center">
 
@@ -484,12 +500,14 @@ readme-architect/
 │   ├── style-archetypes.md     # archetype → layout/tone/badge/section presets
 │   ├── badges.md               # shields.io badge catalog
 │   ├── decoration-toolkit.md   # the 9 personalization techniques
+│   ├── input-controls.md       # ignore rules and bilingual output contract
 │   └── visual-assets.md        # drawio / nano-banana-pro / gpt-image-2 integration
 ├── templates/                  # per-archetype README skeletons
 ├── scripts/
 │   ├── analyze_project.py      # repo → profile.json (stdlib only)
 │   ├── check_integrations.py    # detect drawio / image skills / creds (any OS)
 │   └── validate_readme.py      # anchors / links / placeholders check
+├── tests/                      # analyzer and bilingual-layout regression tests
 └── assets/readme/              # generated banner & architecture diagram
 ```
 
@@ -499,7 +517,8 @@ Reference files worth reading: [SKILL.md](SKILL.md) ·
 [section-library](references/section-library.md) ·
 [style-archetypes](references/style-archetypes.md) ·
 [decoration-toolkit](references/decoration-toolkit.md) ·
-[visual-assets](references/visual-assets.md).
+[visual-assets](references/visual-assets.md) ·
+[input-controls](references/input-controls.md).
 
 <a id="en-getting-started"></a>
 
@@ -530,11 +549,20 @@ Generate a README for this project.
 The skill takes over from there. You can also run the helper scripts directly:
 
 ```bash
+# Optional: exclude paths that must not become README evidence.
+cat > .readme-architectignore <<'EOF'
+internal/
+*.snapshot
+EOF
+
 # 1. Analyze a repo into a structured profile
 python3 scripts/analyze_project.py --root . --out .readme-architect/profile.json
 
-# 2. Validate a finished README
-python3 scripts/validate_readme.py README.md
+# 2. Validate the default bilingual README
+python3 scripts/validate_readme.py --bilingual README.md
+
+# 3. Run the built-in regression tests
+python3 -m unittest discover -s tests -v
 ```
 
 > [!TIP]
