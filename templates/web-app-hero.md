@@ -4,7 +4,9 @@ Replace every {{PLACEHOLDER}}. Delete sections without real content.
 Uses: banner, badges, emoji headings, feature grid, dividers, TOC, callouts, dynamic cards.
 -->
 <a id="readme-top"></a>
-<div align="right"><a href="./README.md">English</a> | <a href="./README.zh-CN.md">简体中文</a></div>
+<div align="right"><a href="#简体中文">简体中文</a> | <a href="#english">English</a></div>
+
+<!-- Render this hero once in English. Put the Chinese body before the English body below it. -->
 
 <div align="center">
   <img src="assets/readme/banner.png" alt="{{PROJECT_NAME}} banner" width="100%" />

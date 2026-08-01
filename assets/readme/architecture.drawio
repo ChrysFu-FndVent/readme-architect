@@ -43,11 +43,8 @@
           <mxGeometry x="945" y="280" width="230" height="45" as="geometry" />
         </mxCell>
 
-        <mxCell id="out1" value="README.md (EN)" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="960" y="420" width="200" height="55" as="geometry" />
-        </mxCell>
-        <mxCell id="out2" value="README.zh-CN.md (中文)" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="960" y="500" width="200" height="55" as="geometry" />
+        <mxCell id="out1" value="README.md (中文 → English)" style="rounded=1;fillColor=#0B1221;strokeColor=#4F46E5;fontColor=#E5E7EB;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="960" y="460" width="220" height="55" as="geometry" />
         </mxCell>
 
         <mxCell id="e0" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#38BDF8;strokeWidth=1.5;endArrow=block;" edge="1" parent="1" source="in" target="orch">
@@ -57,9 +54,6 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;" edge="1" parent="1" source="skills" target="out1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;" edge="1" parent="1" source="orch" target="out2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>

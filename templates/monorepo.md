@@ -2,14 +2,13 @@
 TEMPLATE: monorepo (packages table front-and-center).
 Replace every {{PLACEHOLDER}}. Delete sections without real content.
 -->
-<div align="right"><a href="./README.md">English</a> | <a href="./README.zh-CN.md">简体中文</a></div>
+<!-- Use this as the English body after the Chinese body. Render the English title and tagline once above both language sections. -->
+<a id="english"></a>
 
-# {{PROJECT_NAME}}
+## English
 
 ![Build](https://img.shields.io/github/actions/workflow/status/{{OWNER}}/{{REPO}}/{{CI_FILE}})
 ![License](https://img.shields.io/github/license/{{OWNER}}/{{REPO}})
-
-{{TAGLINE_UNDER_120_CHARS}}
 
 ## Table of Contents
 

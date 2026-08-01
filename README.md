@@ -1,34 +1,26 @@
 <a id="readme-top"></a>
 <div align="right"><a href="#简体中文">简体中文</a> | <a href="#english">English</a></div>
 
-<a id="简体中文"></a>
-
 <div align="center">
 
-<img src="assets/readme/banner.png" alt="README Architect 横幅" width="100%" />
+<img src="assets/readme/banner.png" alt="README Architect banner" width="100%" />
 
 <h1>README Architect</h1>
 
-<p><em>把它对准一个代码库 —— 得到一份为该项目量身定制、风格契合的<strong>双语</strong> README。</em></p>
+<p><em>Point it at a codebase — get a personalized, style-matched, <strong>bilingual</strong> README.</em></p>
 
 <p>
   <a href="https://github.com/ChrysFu-FndVent/readme-architect/stargazers"><img src="https://img.shields.io/github/stars/ChrysFu-FndVent/readme-architect?style=for-the-badge&color=38BDF8&labelColor=0B1221" alt="Stars" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/ChrysFu-FndVent/readme-architect?style=for-the-badge&color=4F46E5&labelColor=0B1221" alt="License" /></a>
   <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0B1221" alt="Python" />
   <img src="https://img.shields.io/badge/Agent%20Skill-Qoder%20%26%20Claude-4F46E5?style=for-the-badge&labelColor=0B1221" alt="Agent Skill" />
-  <img src="https://img.shields.io/badge/Output-EN%20%2B%20ZH-38BDF8?style=for-the-badge&labelColor=0B1221" alt="双语输出" />
-  <img src="https://img.shields.io/badge/Runs%20on-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-38BDF8?style=for-the-badge&labelColor=0B1221" alt="跨平台" />
-</p>
-
-<p>
-  <a href="#zh-about">简介</a> ·
-  <a href="#zh-features">特性</a> ·
-  <a href="#zh-how-it-works">工作原理</a> ·
-  <a href="#zh-getting-started">快速开始</a> ·
-  <a href="#zh-usage">使用方法</a>
+  <img src="https://img.shields.io/badge/Output-ZH%20%E2%86%92%20EN-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Chinese first, English second" />
+  <img src="https://img.shields.io/badge/Runs%20on-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Cross-platform" />
 </p>
 
 </div>
+
+<a id="简体中文"></a>
 
 > [!NOTE]
 > **有意思的是：** 这份 README 正是由该技能自己生成的 —— 它把自己识别为一个开发者工具，赋予其
@@ -46,7 +38,7 @@
 |---|---|
 | **类型** | Agent Skill（开发者工具） |
 | **语言** | Python 3.8+ · 仅标准库 |
-| **产物** | `README.md`（英）+ `README.zh-CN.md`（中） |
+| **产物** | 单个 `README.md`（中文正文在前，英文正文在后） |
 | **运行于** | macOS · Linux · Windows |
 | **依赖** | 无强制依赖 —— 视觉技能均为可选 |
 
@@ -56,21 +48,21 @@
 <details>
 <summary>📑 目录 · Table of Contents</summary>
 
-- [✨ 简介](#about)
-- [🎯 特性](#features)
-- [⚙️ 工作原理](#how-it-works)
-- [🏗️ 架构](#architecture)
-- [🧩 项目类型（Archetype）](#archetypes)
-- [🎨 个性化装饰工具箱](#personalization)
-- [🖼️ 视觉联动](#visuals)
-- [📂 项目结构](#structure)
-- [🚀 快速开始](#getting-started)
-- [💡 使用方法](#usage)
-- [📋 环境要求](#requirements)
-- [🗺️ 路线图](#roadmap)
-- [🤝 参与贡献](#contributing)
-- [📄 许可证](#license)
-- [🙏 致谢](#acknowledgments)
+- [✨ 简介](#zh-about)
+- [🎯 特性](#zh-features)
+- [⚙️ 工作原理](#zh-how-it-works)
+- [🏗️ 架构](#zh-architecture)
+- [🧩 项目类型（Archetype）](#zh-archetypes)
+- [🎨 个性化装饰工具箱](#zh-personalization)
+- [🖼️ 视觉联动](#zh-visuals)
+- [📂 项目结构](#zh-structure)
+- [🚀 快速开始](#zh-getting-started)
+- [💡 使用方法](#zh-usage)
+- [📋 环境要求](#zh-requirements)
+- [🗺️ 路线图](#zh-roadmap)
+- [🤝 参与贡献](#zh-contributing)
+- [📄 许可证](#zh-license)
+- [🙏 致谢](#zh-acknowledgments)
 
 </details>
 
@@ -84,8 +76,8 @@
 真实的代码与文件，写出一份**看起来是为该项目手工打磨**的 README —— 而不是通用的填空模板。
 
 它**全自动**运行：分析 → 分类 → 推导设计语言 → 挑选章节 → 生成视觉 → 组装双语 README → 校验。
-产物是一份英文 `README.md` 加一份中文 `README.zh-CN.md`，其排版、徽章、语气与插图都为**当前这个仓库**
-量身选择。
+产物是一个 `README.md`：标题和短简介仅使用英文，完整中文正文在前，完整英文正文在后；两部分的排版、徽章、
+语气与插图都为**当前这个仓库**量身选择。
 
 > [!TIP]
 > 核心在于**契合**。精简的库会得到信息密集、以内容为先的 README；Web 应用则得到带横幅和功能网格的居中
@@ -101,7 +93,7 @@
   `monorepo` 或 `minimal`，并据此调整排版、章节与语气。
 - 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
   配图生成提示词。
-- 🌐 **默认双语** —— 平行的 `README.md`（英文）+ `README.zh-CN.md`（中文），每份顶部都有语言切换。
+- 🌐 **默认双语** —— 单个 `README.md` 中完整中文正文在前、英文正文在后，标题和短简介只出现英文版一次。
 - 🖼️ **可选 AI 视觉** —— 架构/流程图与 AI 生成横幅，联动 `drawio`、`nano-banana-pro` →
   `nano-banana-flash` → `generate-gpt-image-2` 链路，每一级都具备优雅降级（最终降到原生 Mermaid 图）。
 - 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
@@ -313,33 +305,6 @@ python3 scripts/validate_readme.py README.md
 
 <a id="english"></a>
 
-<div align="center">
-
-<img src="assets/readme/banner.png" alt="README Architect banner" width="100%" />
-
-<h1>README Architect</h1>
-
-<p><em>Point it at a codebase — get a personalized, style-matched, <strong>bilingual</strong> README.</em></p>
-
-<p>
-  <a href="https://github.com/ChrysFu-FndVent/readme-architect/stargazers"><img src="https://img.shields.io/github/stars/ChrysFu-FndVent/readme-architect?style=for-the-badge&color=38BDF8&labelColor=0B1221" alt="Stars" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/ChrysFu-FndVent/readme-architect?style=for-the-badge&color=4F46E5&labelColor=0B1221" alt="License" /></a>
-  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=0B1221" alt="Python" />
-  <img src="https://img.shields.io/badge/Agent%20Skill-Qoder%20%26%20Claude-4F46E5?style=for-the-badge&labelColor=0B1221" alt="Agent Skill" />
-  <img src="https://img.shields.io/badge/Output-EN%20%2B%20ZH-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Bilingual output" />
-  <img src="https://img.shields.io/badge/Runs%20on-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-38BDF8?style=for-the-badge&labelColor=0B1221" alt="Cross-platform" />
-</p>
-
-<p>
-  <a href="#en-about">About</a> ·
-  <a href="#en-features">Features</a> ·
-  <a href="#en-how-it-works">How it works</a> ·
-  <a href="#en-getting-started">Getting Started</a> ·
-  <a href="#en-usage">Usage</a>
-</p>
-
-</div>
-
 > [!NOTE]
 > **Meta moment:** this very README was drafted by the skill itself — analyzed as a developer tool,
 > given a *blueprint* design language, and rendered with a generated hero banner and a real **draw.io**
@@ -356,7 +321,7 @@ python3 scripts/validate_readme.py README.md
 |---|---|
 | **Type** | Agent Skill (developer tool) |
 | **Language** | Python 3.8+ · standard library only |
-| **Output** | `README.md` (EN) + `README.zh-CN.md` (中文) |
+| **Output** | one `README.md`, Chinese body first and English body second |
 | **Runs on** | macOS · Linux · Windows |
 | **Dependencies** | none required — visual skills are optional |
 
@@ -366,21 +331,21 @@ python3 scripts/validate_readme.py README.md
 <details>
 <summary>📑 Table of Contents</summary>
 
-- [✨ About](#about)
-- [🎯 Features](#features)
-- [⚙️ How it works](#how-it-works)
-- [🏗️ Architecture](#architecture)
-- [🧩 Archetypes](#archetypes)
-- [🎨 Personalization toolkit](#personalization)
-- [🖼️ Visual integration](#visuals)
-- [📂 Project structure](#structure)
-- [🚀 Getting Started](#getting-started)
-- [💡 Usage](#usage)
-- [📋 Requirements](#requirements)
-- [🗺️ Roadmap](#roadmap)
-- [🤝 Contributing](#contributing)
-- [📄 License](#license)
-- [🙏 Acknowledgments](#acknowledgments)
+- [✨ About](#en-about)
+- [🎯 Features](#en-features)
+- [⚙️ How it works](#en-how-it-works)
+- [🏗️ Architecture](#en-architecture)
+- [🧩 Archetypes](#en-archetypes)
+- [🎨 Personalization toolkit](#en-personalization)
+- [🖼️ Visual integration](#en-visuals)
+- [📂 Project structure](#en-structure)
+- [🚀 Getting Started](#en-getting-started)
+- [💡 Usage](#en-usage)
+- [📋 Requirements](#en-requirements)
+- [🗺️ Roadmap](#en-roadmap)
+- [🤝 Contributing](#en-contributing)
+- [📄 License](#en-license)
+- [🙏 Acknowledgments](#en-acknowledgments)
 
 </details>
 
@@ -395,9 +360,9 @@ project's real code and files and writes a README that looks **hand-crafted for 
 project** — not a generic fill-in-the-blanks template.
 
 It runs **fully automatically**: analyze → classify → derive a design language → pick sections →
-generate visuals → assemble a bilingual README → validate. The result is an English `README.md`
-plus a Chinese `README.zh-CN.md`, with layout, badges, tone, and illustrations chosen to fit *this*
-repository.
+generate visuals → assemble a bilingual README → validate. The result is one `README.md`: its title
+and short tagline are English-only, then the Chinese body comes before the English body, with layout,
+badges, tone, and illustrations chosen to fit *this* repository.
 
 > [!TIP]
 > The whole point is **fit**. A lean library gets a dense, information-first README; a web app gets a
@@ -413,8 +378,8 @@ repository.
   `ml-ai`, `monorepo`, or `minimal`, then adapts layout, sections, and tone.
 - 🎨 **Per-project design language** — derives palette, personality, and motifs from the real project
   and lets them drive **both** the layout styling **and** every image-generation prompt.
-- 🌐 **Bilingual by default** — parallel `README.md` (English) + `README.zh-CN.md` (中文) with a
-  language switch at the top of each.
+- 🌐 **Bilingual by default** — one `README.md` with an English-only title and tagline, a Chinese body
+  first, and an English body second, linked with anchors at the top.
 - 🖼️ **Optional AI visuals** — architecture/flow diagrams and AI-generated banners, wired to the
   `drawio`, `nano-banana-pro` → `nano-banana-flash` → `generate-gpt-image-2` chain, with graceful
   fallback at every step (down to a native Mermaid diagram).

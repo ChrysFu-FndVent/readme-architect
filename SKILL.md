@@ -1,6 +1,6 @@
 ---
 name: readme-architect
-description: Automatically generate a personalized, style-matched README for a project by analyzing its code and files. Detects the project's archetype (library, CLI, web/app, framework, ML/AI, monorepo, minimal) and adapts layout, sections, badges, and tone accordingly. Produces bilingual output (English README.md + Chinese README.zh-CN.md) and integrates the drawio skill (with a Mermaid fallback) for architecture/flow diagrams and the nano-banana-pro / nano-banana-flash / generate-gpt-image-2 skills for banners/logos/illustrations. Use when the user asks to create, generate, write, refresh, or beautify a README / project documentation from a codebase.
+description: Automatically generate a personalized, style-matched bilingual README for a project by analyzing its code and files. The single README.md keeps its title and tagline in English, then presents Chinese content before its English equivalent. Detects the project's archetype (library, CLI, web/app, framework, ML/AI, monorepo, minimal) and adapts layout, sections, badges, and tone accordingly. Integrates the drawio skill (with a Mermaid fallback) for architecture/flow diagrams and the nano-banana-pro / nano-banana-flash / generate-gpt-image-2 skills for banners/logos/illustrations. Use when the user asks to create, generate, write, refresh, or beautify a README / project documentation from a codebase.
 ---
 
 # README Architect
@@ -11,7 +11,7 @@ Generate a README that looks like it was hand-crafted for **this specific projec
 
 This skill runs **fully automatically** by default: analyze → classify → select components → generate visuals → assemble bilingual README → validate → report. Do not stop to ask questions unless a required input is missing (e.g. no readable project directory) or an outward-facing action needs consent (e.g. overwriting an existing hand-written README, or publishing).
 
-Default output: **`README.md` (English)** + **`README.zh-CN.md` (Chinese)** with a language switch line at the top of each. If the user specifies a single language, produce only that one.
+Default output: one bilingual **`README.md`**. Render the document title and its short tagline in English once, then present the Chinese body first and the English body second. Use stable anchors and a language switch at the top. If the user specifies a single language, produce only that one.
 
 ## Workflow
 
@@ -97,17 +97,17 @@ Invocation contracts (verify a skill's own SKILL.md before calling — do not gu
 - nano-banana-pro / nano-banana-flash: `python3 <skill-dir>/scripts/generate_image.py --prompt "<prompt>" --output "<assets/readme/banner.png>"` (needs `XIAOHULI_API_KEY`).
 - generate-gpt-image-2: `node <skill-dir>/scripts/gpt_image_2.mjs generate --prompt "<prompt>" --out "<assets/readme/banner.png>"` (uses `~/.codex/auth.json`).
 
-### Step 5 — Assemble the README(s)
+### Step 5 — Assemble the README
 
-Write `README.md` (English). Then produce `README.zh-CN.md` as a faithful Chinese translation with identical structure, assets, and anchors. Add a language switch at the very top of each:
+Write one `README.md`. Render the title and short tagline in English only, once at the top. Under that shared header, add a language switch and two anchored body sections: **Simplified Chinese first**, followed by a faithful English equivalent. The two body sections must have the same facts, structure, assets, and navigation targets, with distinct anchors. Do not create `README.zh-CN.md` for the default bilingual mode.
 
 ```markdown
-<div align="right"><a href="./README.md">English</a> | <a href="./README.zh-CN.md">简体中文</a></div>
+<div align="right"><a href="#简体中文">简体中文</a> | <a href="#english">English</a></div>
 ```
 
 Follow the chosen template in `templates/` for markup patterns (centered hero blocks, `<details>` TOC, reference-style link definitions, Built-With badge grid, back-to-top links). Apply the visual polish techniques in [references/decoration-toolkit.md](references/decoration-toolkit.md) — badges, centered/aligned HTML blocks, decorative dividers, tasteful per-section emoji, collapsible `<details>`, comparison/parameter tables, live data cards (star history / stats), `> [!NOTE]` callouts, language-tagged code fences, and anchor navigation. Drive every styling choice from the **Step 2b design brief** (real palette → badge/divider/diagram colors; personality → emoji density & richness; motifs → emoji/glyph choices) on top of the archetype baseline (lean for libraries, rich for web-app/framework), so the layout looks designed for *this* project. Match the project's existing tone if a README or docs already exist.
 
-**Safety on overwrite:** if a substantive hand-written `README.md` already exists, do not silently overwrite it — write to `README.generated.md` (and `README.zh-CN.generated.md`) and tell the user, unless they explicitly asked to replace it.
+**Safety on overwrite:** if a substantive hand-written `README.md` already exists, do not silently overwrite it — write the complete bilingual document to `README.generated.md` and tell the user, unless they explicitly asked to replace it.
 
 ### Step 6 — Validate
 
