@@ -22,11 +22,6 @@
 
 <a id="简体中文"></a>
 
-> [!NOTE]
-> **有意思的是：** 这份 README 正是由该技能自己生成的 —— 它把自己识别为一个开发者工具，赋予其
-> *蓝图（blueprint）* 设计语言，并配上一张生成的主视觉横幅和一张真正的 **draw.io** 架构图。
-> 这就是技能“自己吃自己的狗粮”。🐕
-
 <table>
 <tr><td>
 
@@ -304,11 +299,6 @@ python3 scripts/validate_readme.py README.md
 - [Mermaid](https://mermaid.js.org) —— 可在 GitHub 原生渲染的图表。
 
 <a id="english"></a>
-
-> [!NOTE]
-> **Meta moment:** this very README was drafted by the skill itself — analyzed as a developer tool,
-> given a *blueprint* design language, and rendered with a generated hero banner and a real **draw.io**
-> architecture diagram. It is the skill eating its own dog food. 🐕
 
 <table>
 <tr><td>
