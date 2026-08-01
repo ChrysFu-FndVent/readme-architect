@@ -1,64 +1,52 @@
-# Presentation Recipes
+# Adaptive Presentation Signals
 
-Use these recipes after choosing an archetype and reading the analyzer's `presentation_profile`.
-They are domain overlays, not templates: retain only elements supported by the project files and the
-Step 2b design brief. A recipe must never create unsupported product claims or replace practical
-documentation with decoration.
+Use these signals after choosing an archetype and reading the analyzer's `presentation_profile`.
+They are composable overlays, not domain templates: retain only elements supported by the project
+files and the Step 2b design brief. A signal must never create unsupported product claims or
+replace practical documentation with decoration.
 
 ## Selection Rules
 
 1. Start with the archetype in `style-archetypes.md` for the document skeleton.
-2. Confirm the profile's `matched_terms` in the repository's name, manifest description, or source
-   paths before applying a recipe.
-3. Use at most one banner, one diagram, one compact badge set, and one feature grid by default.
+2. Confirm every signal's `matched_terms` in the repository's name, manifest description, or source
+   paths before applying it. Signals can combine when they describe different real aspects of a
+   project.
+3. Set a component budget before composing signals: use at most one banner or illustration, one
+   primary diagram, one compact badge set, one feature/gallery grid, and one evidence table by
+   default. Add a second diagram only when it explains a distinct, documented concern.
 4. Run `check_integrations.py` before calling `drawio`, `nano-banana-*`, or `generate-gpt-image-2`.
    If a route is unavailable, omit the asset or use Mermaid for diagrams.
 5. Existing screenshots always outrank generated images. Generated images illustrate concepts; they
    never impersonate a real product screen.
 
-## Food, Recipe, and Health
+## Signal Catalog
 
-**Signals:** `recipe`, `cookbook`, `meal`, `nutrition`, `diet`, `food`, `health`, `wellness`,
-`fitness`, or `workout` in real project metadata or paths.
+| Signal | Prefer | Avoid unless evidenced |
+|---|---|---|
+| **Friendly experience** | warm feature grid, rounded badges, contextual illustration | medical efficacy, guarantees, or outcomes |
+| **Product showcase** | existing screenshots, demo links, concise feature gallery | generated UI screenshots or fictional interaction flows |
+| **Workflow and operations** | state/workflow diagram, setup tables, real roles and handoffs | invented SLAs, scale, permissions, or integrations |
+| **System and infrastructure** | architecture, deployment/integration map, configuration table | undocumented services, data stores, or cloud providers |
+| **Data and research** | pipeline, genuine result table/chart, reproducibility notes | synthetic benchmarks, charts, or data claims |
+| **Trust and governance** | trust boundary, permission flow, supported-controls table | security, compliance, or audit claims not documented in code |
+| **Learning and community** | quick-start path, examples index, contribution/extension guide | unsupported support channels or certifications |
+| **Creative showcase** | real asset gallery, intentionally visual feature grid, project-specific illustration | substituting generated media for the actual work |
+| **AI and intelligence** | capability table, model/data-flow diagram, evidenced limitations | fabricated accuracy, providers, autonomy, or safeguards |
 
-- **Tone:** warm, clear, and encouraging. Use a light, consistent palette drawn from the project; if
-  none exists, choose a restrained food/health palette rather than a clinical or cartoonish default.
-- **Components:** a friendly feature grid, rounded `for-the-badge` or `flat-square` badges, and an
-  optional generated ingredient, meal-planning, activity, or wellbeing illustration that reflects
-  the actual feature set.
-- **Diagram:** add a flow only when the project has a real sequence, such as ingredients → planning →
-  saved plan, or device data → analysis → recommendation. Use draw.io when available, Mermaid when
-  not.
-- **Safety:** do not state medical efficacy, diagnosis, nutritional guarantees, or health outcomes
-  unless the repository provides substantiated evidence and appropriate wording.
+## Composition Examples
 
-## Operational Workbenches and Admin Tools
+- A meal-planning mobile app can combine **friendly experience** with **product showcase**: use real
+  screens first, a small feature grid, and one contextual illustration only if it adds meaning.
+- A financial administration console can combine **workflow and operations**, **trust and
+  governance**, and **system and infrastructure**: prioritize role-aware flow and integration maps;
+  keep visual treatment restrained.
+- A scientific visualizer can combine **data and research** with **creative showcase**: show genuine
+  plots or assets, methodology, and a focused gallery rather than generic AI art.
+- An AI developer platform can combine **AI and intelligence**, **system and infrastructure**, and
+  **learning and community**: show the real pipeline, documented limitations, and extension path.
 
-**Signals:** `workbench`, `dashboard`, `workspace`, `admin`, `operations`, `workflow`, `crm`, or
-`backoffice` in real project metadata or paths.
-
-- **Tone:** calm, information-dense, and operational. Prefer flat/flat-square badges, concise
-  headings, tables, and a low emoji density.
-- **Components:** a clear system architecture diagram when there are multiple modules or services; a
-  workflow diagram when states, approvals, or handoffs are evidenced; configuration and deployment
-  tables when those files exist.
-- **Visuals:** use generated imagery sparingly. A diagram that explains data flow, permissions, or
-  handoffs has priority over a decorative banner.
-- **Safety:** show only real roles, integrations, data stores, and permissions. Do not invent scale,
-  SLAs, audit controls, or compliance claims.
-
-## AI, Agent, and Model Systems
-
-**Signals:** `agent`, `llm`, `rag`, `model`, `inference`, `prompt`, `machine learning`, or
-`artificial intelligence` in real project metadata or paths.
-
-- **Tone:** technical and legible. Use an architecture or pipeline diagram before decorative media.
-- **Components:** capability tables, evidence-based model/provider badges, a real agent or data-flow
-  diagram, and a limitations section when the code or docs define bounds.
-- **Visuals:** favor schematic or geometric illustrations derived from actual components, such as
-  retriever, evaluator, queue, model, and human review. Avoid generic neural-network imagery.
-- **Safety:** do not claim autonomy, benchmark results, provider support, accuracy, or safety controls
-  that cannot be traced to the project.
+These examples demonstrate combinations, not an exhaustive taxonomy. For a project with no matching
+signal, follow the archetype defaults and the project's existing voice.
 
 ## Neutral Fallback
 

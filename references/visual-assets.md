@@ -12,10 +12,11 @@ which image routes are `usable_now`, whether drawio is reachable (PATH or macOS 
 which credentials are present. Use its **preferred banner route** and fall through the chains below
 rather than guessing.
 
-When the analyzer emits a supported `presentation_profile`, use
-[presentation-recipes.md](presentation-recipes.md) to decide whether a friendly illustration, a
-workflow diagram, or a system diagram is the most useful asset. The recipe changes presentation,
-never the underlying factual evidence.
+When the analyzer emits an adaptive `presentation_profile`, read its verified `signals` together
+with [presentation-recipes.md](presentation-recipes.md). Choose the useful asset for the actual
+project: real product media, a learning flow, a workflow or permission diagram, a data pipeline, a
+system map, or a contextual illustration. Signals can combine; presentation never changes the
+underlying factual evidence.
 
 ---
 

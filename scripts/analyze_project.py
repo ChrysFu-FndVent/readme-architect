@@ -66,23 +66,65 @@ ML_SIGNS = {"torch", "tensorflow", "transformers", "scikit-learn", "sklearn", "k
 WEBAPP_SIGNS = {"react", "vue", "svelte", "@angular/core", "next", "nuxt", "django",
                 "flask", "fastapi", "rails", "laravel", "spring-boot"}
 
-PRESENTATION_RECIPES = (
+PRESENTATION_SIGNALS = (
     {
-        "key": "food-health",
-        "terms": ("recipe", "cookbook", "meal", "nutrition", "diet", "food", "health", "wellness", "fitness", "workout"),
+        "key": "friendly-experience",
+        "terms": ("recipe", "cookbook", "meal", "nutrition", "diet", "food", "health", "wellness", "fitness", "workout", "habit", "journal", "travel", "family", "pet"),
         "tone": "friendly and approachable",
         "badge_style": "for-the-badge or flat-square",
         "components": ["friendly feature grid", "rounded badges", "optional illustrative banner"],
     },
     {
-        "key": "operational-workbench",
-        "terms": ("workbench", "dashboard", "workspace", "admin", "operations", "workflow", "crm", "backoffice"),
+        "key": "product-showcase",
+        "terms": ("mobile", "ios", "android", "frontend", "interface", "user experience", "consumer"),
+        "tone": "clear and product-led",
+        "badge_style": "for-the-badge or flat-square",
+        "components": ["real screenshot gallery when available", "feature grid", "optional contextual illustration"],
+    },
+    {
+        "key": "workflow-operations",
+        "terms": ("workbench", "dashboard", "workspace", "admin", "operations", "workflow", "crm", "backoffice", "automation", "orchestration", "queue", "handoff"),
         "tone": "structured and operational",
         "badge_style": "flat or flat-square",
         "components": ["architecture diagram", "workflow diagram", "configuration and deployment tables"],
     },
     {
-        "key": "ai-system",
+        "key": "system-infrastructure",
+        "terms": ("api", "backend", "server", "service", "database", "deployment", "kubernetes", "terraform", "docker", "cloud", "observability", "platform"),
+        "tone": "technical and precise",
+        "badge_style": "flat-square",
+        "components": ["system architecture diagram", "deployment or integration map", "configuration table"],
+    },
+    {
+        "key": "data-research",
+        "terms": ("dataset", "analytics", "analysis", "benchmark", "notebook", "statistics", "visualization", "research", "experiment", "scientific"),
+        "tone": "evidence-led and legible",
+        "badge_style": "flat-square",
+        "components": ["data or experiment pipeline", "results table or chart when available", "reproducibility notes"],
+    },
+    {
+        "key": "trust-governance",
+        "terms": ("security", "privacy", "authentication", "authorization", "identity", "compliance", "audit", "encryption", "payment", "finance", "policy"),
+        "tone": "restrained and trustworthy",
+        "badge_style": "flat-square",
+        "components": ["trust-boundary or permission flow", "supported-controls table", "security configuration notes"],
+    },
+    {
+        "key": "learning-community",
+        "terms": ("tutorial", "course", "lesson", "learning", "documentation", "guide", "community", "plugin", "extension", "template"),
+        "tone": "welcoming and instructional",
+        "badge_style": "flat-square",
+        "components": ["learning path or quick-start flow", "examples index", "contribution and extension guide"],
+    },
+    {
+        "key": "creative-showcase",
+        "terms": ("portfolio", "design", "gallery", "photo", "video", "audio", "music", "art", "animation", "game"),
+        "tone": "expressive and visual",
+        "badge_style": "for-the-badge or flat-square",
+        "components": ["real asset gallery", "compact feature grid", "optional project-specific illustration"],
+    },
+    {
+        "key": "ai-intelligence",
         "terms": ("agent", "llm", "rag", "model", "inference", "prompt", "machine learning", "artificial intelligence"),
         "tone": "technical and legible",
         "badge_style": "flat-square",
@@ -291,28 +333,47 @@ def choose_archetype(profile):
 
 
 def derive_presentation_profile(name, description, all_rel, frameworks):
-    """Suggest a presentation recipe from visible metadata and path names only."""
+    """Suggest composable presentation signals from visible metadata and paths only."""
     corpus = " ".join([name or "", description or "", *all_rel, *frameworks]).lower()
+    normalized = " " + re.sub(r"[^a-z0-9]+", " ", corpus) + " "
     candidates = []
-    for recipe in PRESENTATION_RECIPES:
-        matches = sorted({term for term in recipe["terms"] if term in corpus})
+    for signal in PRESENTATION_SIGNALS:
+        matches = sorted({term for term in signal["terms"] if f" {term} " in normalized})
         if matches:
-            candidates.append((len(matches), recipe, matches))
+            candidates.append((signal, matches))
     if not candidates:
         return {
             "key": "neutral",
             "matched_terms": [],
+            "signals": [],
             "tone": "match the existing project voice",
             "badge_style": "match the archetype default",
             "recommended_components": [],
         }
-    _, recipe, matches = max(candidates, key=lambda item: item[0])
+
+    candidates.sort(key=lambda item: (-len(item[1]), item[0]["key"]))
+    components = []
+    for signal, _ in candidates:
+        for component in signal["components"]:
+            if component not in components:
+                components.append(component)
+    primary, _ = candidates[0]
     return {
-        "key": recipe["key"],
-        "matched_terms": matches,
-        "tone": recipe["tone"],
-        "badge_style": recipe["badge_style"],
-        "recommended_components": recipe["components"],
+        "key": "adaptive",
+        "matched_terms": sorted({term for _, matches in candidates for term in matches}),
+        "signals": [
+            {
+                "key": signal["key"],
+                "matched_terms": matches,
+                "tone": signal["tone"],
+                "badge_style": signal["badge_style"],
+                "recommended_components": signal["components"],
+            }
+            for signal, matches in candidates
+        ],
+        "tone": primary["tone"],
+        "badge_style": primary["badge_style"],
+        "recommended_components": components,
     }
 
 

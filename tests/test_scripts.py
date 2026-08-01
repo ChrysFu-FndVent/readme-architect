@@ -46,8 +46,40 @@ class AnalyzeProjectTests(unittest.TestCase):
             self.assertNotIn("internal", profile["top_level"])
             self.assertEqual(profile["total_files"], 4)
             self.assertEqual(profile["language_counts"], {"Python": 1})
-            self.assertEqual(profile["presentation_profile"]["key"], "food-health")
+            self.assertEqual(profile["presentation_profile"]["key"], "adaptive")
             self.assertEqual(profile["presentation_profile"]["matched_terms"], ["nutrition", "recipe"])
+            self.assertEqual(
+                [signal["key"] for signal in profile["presentation_profile"]["signals"]],
+                ["friendly-experience"],
+            )
+
+    def test_presentation_profile_combines_multiple_project_signals(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / "deploy" / "kubernetes").mkdir(parents=True)
+            (project / "src" / "security").mkdir(parents=True)
+            (project / "package.json").write_text(
+                '{"name":"control-plane","description":"Kubernetes policy enforcement and audit service"}',
+                encoding="utf-8",
+            )
+            (project / "deploy" / "kubernetes" / "service.yaml").write_text("kind: Service\n", encoding="utf-8")
+            (project / "src" / "security" / "policy.py").write_text("pass\n", encoding="utf-8")
+            output = project / "profile.json"
+
+            result = subprocess.run(
+                [sys.executable, str(ANALYZER), "--root", str(project), "--out", str(output)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            profile = json.loads(output.read_text(encoding="utf-8"))
+            signals = {signal["key"] for signal in profile["presentation_profile"]["signals"]}
+            self.assertTrue({"system-infrastructure", "trust-governance"}.issubset(signals))
+            components = profile["presentation_profile"]["recommended_components"]
+            self.assertIn("system architecture diagram", components)
+            self.assertIn("trust-boundary or permission flow", components)
 
 
 class ValidateReadmeTests(unittest.TestCase):

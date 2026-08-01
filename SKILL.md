@@ -57,7 +57,7 @@ The archetype decides the skeleton; the project's own characteristics decide the
 
 Record these as a short design brief and pass it into Step 4 (visuals) and the decoration choices in Step 5, so illustrations and typography feel designed *for this repo*, not generic. Never fabricate a brand color or motif that contradicts the code.
 
-The analyzer also emits a `presentation_profile` from visible metadata and paths. Use it as a **suggestion**, then verify its matched terms against the project before choosing a richer presentation. Apply the corresponding recipe in [references/presentation-recipes.md](references/presentation-recipes.md): food/health projects can use friendly visual treatment, while workbenches and AI systems prioritize architecture, workflow, and pipeline diagrams. Never infer medical outcomes, operational scale, or product behavior from a presentation profile alone.
+The analyzer also emits a `presentation_profile` from visible metadata and paths. Treat it as a **composable suggestion**, then verify every matched term against the project. Its signals can combine product experience, workflow, infrastructure, data/research, trust/governance, learning/community, creative work, and AI. Apply [references/presentation-recipes.md](references/presentation-recipes.md) to choose only the components that serve the documented project: a demo gallery, learning path, permission flow, result table, architecture map, or contextual illustration. Never infer outcomes, scale, controls, or product behavior from a presentation profile alone.
 
 ### Step 3 — Select components (sections)
 
@@ -139,7 +139,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/decoration-toolkit.md](references/decoration-toolkit.md) — the 9 personalization techniques (badges, dividers, alignment, emoji, `<details>`, tables, dynamic cards, callouts, anchors) with copy-ready markup.
 - [references/visual-assets.md](references/visual-assets.md) — when & how to call drawio / nano-banana-pro / gpt-image-2.
 - [references/input-controls.md](references/input-controls.md) — `.readme-architectignore` syntax and evidence-boundary guidance.
-- [references/presentation-recipes.md](references/presentation-recipes.md) — domain-aware components, badge styles, diagrams, and visual budgets.
+- [references/presentation-recipes.md](references/presentation-recipes.md) — composable presentation signals, component choices, badge styles, diagrams, and visual budgets.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
 
 ## Scripts
