@@ -3,6 +3,8 @@
 
 <div align="center">
 
+<img src="assets/readme/banner.png" alt="README Architect banner" width="100%" />
+
 <h1>README Architect</h1>
 
 <p><em>Point it at a codebase — get a personalized, style-matched, <strong>bilingual</strong> README.</em></p>
