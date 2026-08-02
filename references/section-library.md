@@ -58,7 +58,8 @@ that resolve to a real resource. See badges.md.
 
 ### Tagline / Short description
 Required. One line, < 120 chars, no `>` prefix. Should match the GitHub repo description and the
-package manager `description` field.
+package manager `description` field when they exist. If neither exists, state only the verified
+purpose, inputs, or outputs visible in the repository; do not infer a platform, audience, or promise.
 
 ### Table of Contents
 Required for long READMEs. Two common styles:
@@ -68,7 +69,9 @@ Anchors are the lower-cased heading with spaces → `-` and punctuation removed.
 
 ### About / Overview
 The "what and why". 1–3 short paragraphs. Cover the problem it solves and who it is for. Move long
-motivation to a Background subsection if needed.
+motivation to a Background subsection if needed. Derive the wording from source, manifests, or
+project-owned docs. Do not name an AI host, package registry, customer type, integration, or supported
+environment unless a project file or the user explicitly establishes it.
 
 ### Key Features
 Scannable. Bullets with a leading bold label, or a 2–3 column feature grid (HTML table). Only list
@@ -88,7 +91,9 @@ Badge grid of major frameworks/languages/tools actually used (from the analyzer'
 
 ### Getting Started → Prerequisites / Installation
 Required for runnable projects (optional for pure-docs repos). Copy-paste-ready commands in fenced
-blocks with the right language hint. Prefer the project's actual package manager & scripts.
+blocks with the right language hint. Prefer the project's actual package manager & scripts. Never
+invent a host-specific installation directory; when the host is unknown, state that the user must use
+their host's configured skills or extension directory.
 
 ### Usage / Quick Start
 The single most important section for adoption. A minimal runnable example: import + call, or the
@@ -110,8 +115,9 @@ TODOs, milestones); otherwise omit.
 Include when tests / CI / Dockerfiles / deploy configs exist. Show the real commands.
 
 ### Contributing
-Required for open-source. State whether PRs are accepted, where to ask questions, and link to
-`CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` if present. A short fork→branch→PR flow is common.
+Include only when the repository has a contribution policy, issue template, code of conduct, or an
+explicit user instruction. State whether PRs are accepted only when that policy is documented; link to
+`CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` when present.
 
 ### Maintainers / Contributors
 Optional. Maintainer list with a contact link, and/or a `contrib.rocks` contributors image:

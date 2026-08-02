@@ -52,8 +52,6 @@
 - [🚀 快速开始](#zh-getting-started)
 - [💡 使用方法](#zh-usage)
 - [📋 环境要求](#zh-requirements)
-- [🗺️ 路线图](#zh-roadmap)
-- [🤝 参与贡献](#zh-contributing)
 - [📄 许可证](#zh-license)
 - [🙏 致谢](#zh-acknowledgments)
 
@@ -65,8 +63,8 @@
 
 ## ✨ 简介
 
-**README Architect** 是一个面向 Qoder / Claude 的 [Agent Skill](https://docs.anthropic.com)，它读取项目
-真实的代码与文件，写出一份**看起来是为该项目手工打磨**的 README —— 而不是通用的填空模板。
+**README Architect** 是一个用于生成 README 的 Agent Skill。它读取项目真实的代码与文件，写出一份
+**看起来是为该项目手工打磨**的 README —— 而不是通用的填空模板。
 
 它**全自动**运行：分析 → 分类 → 推导设计语言 → 挑选章节 → 生成视觉 → 组装双语 README → 校验。
 产物是一个 `README.md`：标题和短简介仅使用英文，完整中文正文在前，完整英文正文在后；两部分的排版、徽章、
@@ -241,17 +239,8 @@ readme-architect/
 
 ## 🚀 快速开始
 
-把 `readme-architect/` 文件夹复制到你的 agent 技能目录：
-
-```bash
-# Qoder
-cp -r readme-architect ~/.qoder/skills/
-
-# Claude
-cp -r readme-architect ~/.claude/skills/
-```
-
-就这么简单 —— 下次 agent 加载技能时会自动发现它。
+将 `readme-architect/` 文件夹放到所用 AI 助手配置的技能目录。目录位置由宿主工具决定；本项目不把
+任何特定宿主工具作为前提。
 
 <a id="zh-usage"></a>
 
@@ -304,22 +293,6 @@ python3 -m unittest discover -s tests -v
   `python3 scripts/check_integrations.py` 即可查看本机可用能力。若你的技能装在其他位置，可用
   `README_ARCHITECT_SKILL_ROOTS` 扩展技能搜索路径。
 
-<a id="zh-roadmap"></a>
-
-## 🗺️ 路线图
-
-- [ ] 更多项目类型（移动应用、浏览器扩展、游戏项目）。
-- [ ] 英文与中文之外的更多输出语言。
-- [ ] 更丰富的分析信号（测试覆盖率、包体积、依赖图）。
-- [ ] 各项目类型的示例 README 画廊。
-
-<a id="zh-contributing"></a>
-
-## 🤝 参与贡献
-
-欢迎贡献。可以开一个 issue 讨论改动，或直接发 pull request。在新增项目类型或装饰技术时，请保持
-*证据优先于臆造* 的原则。
-
 <a id="zh-license"></a>
 
 ## 📄 许可证
@@ -369,8 +342,6 @@ python3 -m unittest discover -s tests -v
 - [🚀 Getting Started](#en-getting-started)
 - [💡 Usage](#en-usage)
 - [📋 Requirements](#en-requirements)
-- [🗺️ Roadmap](#en-roadmap)
-- [🤝 Contributing](#en-contributing)
 - [📄 License](#en-license)
 - [🙏 Acknowledgments](#en-acknowledgments)
 
@@ -382,9 +353,9 @@ python3 -m unittest discover -s tests -v
 
 ## ✨ About
 
-**README Architect** is an [Agent Skill](https://docs.anthropic.com) for Qoder / Claude that reads a
-project's real code and files and writes a README that looks **hand-crafted for that specific
-project** — not a generic fill-in-the-blanks template.
+**README Architect** is an Agent Skill for generating READMEs. It reads a project's real code and
+files and writes a README that looks **hand-crafted for that specific project** — not a generic
+fill-in-the-blanks template.
 
 It runs **fully automatically**: analyze → classify → derive a design language → pick sections →
 generate visuals → assemble a bilingual README → validate. The result is one `README.md`: its title
@@ -576,17 +547,8 @@ Reference files worth reading: [SKILL.md](SKILL.md) ·
 
 ## 🚀 Getting Started
 
-Copy the `readme-architect/` folder into your agent's skills directory:
-
-```bash
-# Qoder
-cp -r readme-architect ~/.qoder/skills/
-
-# Claude
-cp -r readme-architect ~/.claude/skills/
-```
-
-That's it — the skill is discovered automatically the next time your agent loads its skills.
+Place the `readme-architect/` folder in the configured skills directory of the AI assistant you use.
+The directory is host-specific; this project does not assume a particular host.
 
 <a id="en-usage"></a>
 
@@ -639,22 +601,6 @@ python3 -m unittest discover -s tests -v
 - **Any OS.** Detection is portable across macOS / Linux / Windows; run
   `python3 scripts/check_integrations.py` to see what's available on your machine. Extend skill search
   paths with `README_ARCHITECT_SKILL_ROOTS` if your skills live elsewhere.
-
-<a id="en-roadmap"></a>
-
-## 🗺️ Roadmap
-
-- [ ] More archetypes (mobile apps, browser extensions, game projects).
-- [ ] Additional output languages beyond English and Chinese.
-- [ ] Richer analyzer signals (test coverage, bundle size, dependency graph).
-- [ ] A gallery of example READMEs generated per archetype.
-
-<a id="en-contributing"></a>
-
-## 🤝 Contributing
-
-Contributions are welcome. Open an issue to discuss a change, or send a pull request. When adding a
-new archetype or decoration technique, please keep the *evidence-over-invention* rule intact.
 
 <a id="en-license"></a>
 

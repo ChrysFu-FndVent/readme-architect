@@ -13,6 +13,16 @@ This skill runs **fully automatically** by default: analyze → classify → sel
 
 Default output: one bilingual **`README.md`**. Render the document title and its short tagline in English once, then present the Chinese body first and the English body second. Use stable anchors and a language switch at the top. If the user specifies a single language, produce only that one.
 
+## Evidence gate
+
+Before writing, build a short claim ledger from the repository: each reader-facing feature, command,
+platform/host claim, badge, integration, roadmap item, and contribution instruction needs a supporting
+file, manifest field, test, configuration, or user-provided fact. Cross-check the ledger against the
+actual source files, not just a folder name or an earlier README. Omit claims without support; use
+neutral wording when the evidence only establishes a generic capability. In particular, never name an
+AI assistant, package registry, OS, cloud, deployment target, or compatibility guarantee unless the
+project itself declares it or the user supplied that fact.
+
 ## Workflow
 
 ### Step 1 — Analyze the project
@@ -25,7 +35,7 @@ python3 "<skill-dir>/scripts/analyze_project.py" --root "<project-root>" --out "
 
 The profile reports: project name, description, version, license, primary/secondary languages, package managers & manifests, detected frameworks, entrypoints/bin, scripts, test & CI presence, Docker, monorepo packages, existing docs/images, ranked `media_candidates`, active ignore patterns, and the git remote (`owner/repo`) used for badges.
 
-Read the JSON. Treat it as **evidence**, not gospel — confirm important facts against the actual files (open `package.json`, `pyproject.toml`, main entry, config) before writing claims. Never invent features, benchmarks, or usage that you cannot see in the code.
+Read the JSON. Treat it as **evidence**, not gospel — confirm important facts against the actual files (open `package.json`, `pyproject.toml`, main entry, config) before writing claims. Populate the evidence gate before prose: every sentence about capabilities, supported hosts, installation, users, or future plans must trace to a concrete source. Never invent features, benchmarks, usage, platform compatibility, or roadmap items.
 
 ### Step 2 — Classify the archetype & pick a style
 
@@ -160,6 +170,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 ## Guardrails
 
 - Evidence over invention: every feature/command/badge must trace to a real file or fact.
+- No borrowed context: do not carry a platform name, install path, product audience, feature, roadmap, or contribution policy from another repository, an old README, or a generic template into the current README.
 - Keep generated files inside the project workspace; never leak API keys into prompts, files, or logs.
 - Retry a failing external skill at most once, then degrade gracefully and report.
 - Respect existing hand-written docs; prefer additive/side-file output when unsure.
