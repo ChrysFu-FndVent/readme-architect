@@ -157,6 +157,8 @@ Invocation contracts (verify a skill's own SKILL.md before calling — do not gu
 
 Write one `README.md`. Render the title and short tagline in English only, once at the top. Under that shared header, add a language switch and two anchored body sections: **Simplified Chinese first**, followed by a faithful English equivalent. The two body sections must have the same facts, structure, assets, and navigation targets, with distinct anchors. Do not create `README.zh-CN.md` for the default bilingual mode.
 
+**TOC placement is strict.** For a README longer than about 100 lines, put the complete table of contents immediately after the shared project opening: title, optional banner/logo, approved badges, short tagline, and language switch. It must appear before the Chinese and English body introductions, feature lists, screenshots, or any other long overview. Keep the opening concise so a reader reaches navigation immediately after it.
+
 ```markdown
 <div align="right"><a href="#简体中文">简体中文</a> | <a href="#english">English</a></div>
 ```

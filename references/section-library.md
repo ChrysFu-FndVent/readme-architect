@@ -13,7 +13,7 @@ or placeholder section is worse than no section.
 3.  Badges                   (optional, newline-delimited, no heading)
 4.  Tagline / Short desc     (required, < 120 chars, own line, no heading)
 5.  Language switch          (optional, for multilingual READMEs)
-6.  Table of Contents        (required if README > ~100 lines)
+6.  Table of Contents        (required if README > ~100 lines; immediately after the opening)
 7.  About / Overview         (what & why)
 8.  Key Features             (bulleted or feature grid)
 9.  Demo / Screenshots       (real media only)
@@ -62,7 +62,10 @@ package manager `description` field when they exist. If neither exists, state on
 purpose, inputs, or outputs visible in the repository; do not infer a platform, audience, or promise.
 
 ### Table of Contents
-Required for long READMEs. Two common styles:
+Required for long READMEs. Place it immediately after the complete project opening (title, optional
+banner/logo, badges, short tagline, and language switch) and before either language's About/Overview
+body. Do not put a multi-paragraph project introduction, feature list, screenshot gallery, or other
+long content before it. Two common styles:
 - Collapsible: wrap in `<details><summary>Table of Contents</summary> … </details>`.
 - Flat bullet list of `[Section](#anchor)` links.
 Anchors are the lower-cased heading with spaces → `-` and punctuation removed.
