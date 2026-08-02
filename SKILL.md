@@ -15,13 +15,23 @@ Default output: one bilingual **`README.md`**. Render the document title and its
 
 ## Evidence gate
 
-Before writing, build a short claim ledger from the repository: each reader-facing feature, command,
-platform/host claim, badge, integration, roadmap item, and contribution instruction needs a supporting
-file, manifest field, test, configuration, or user-provided fact. Cross-check the ledger against the
-actual source files, not just a folder name or an earlier README. Omit claims without support; use
-neutral wording when the evidence only establishes a generic capability. In particular, never name an
-AI assistant, package registry, OS, cloud, deployment target, or compatibility guarantee unless the
-project itself declares it or the user supplied that fact.
+This is a hard gate, not an editing preference. Do not draft factual README prose until you have built
+a working claim ledger from the repository:
+
+| Intended claim | Evidence path and exact fact | Decision |
+|---|---|---|
+| A feature, command, badge, platform claim, integration, roadmap item, or contribution instruction | A source file, manifest field, test, configuration, issue/milestone, or user-provided fact | Include only when supported; otherwise omit |
+
+Read the cited file before accepting a claim. A folder name, a generic template, an earlier README,
+or an assumption about common project conventions is **not** evidence. Do not soften an unsupported
+claim into speculation: omit it. In particular, never name an AI assistant, package registry, OS,
+cloud, deployment target, target audience, or compatibility guarantee unless the project or user
+explicitly establishes it. Generated visual assets must follow the same rule: no fictional UI,
+status, metrics, integrations, or product behavior.
+
+After assembly and before Step 6, audit every factual sentence, command, code block, badge, diagram
+node, link label, and image caption against the ledger. Remove any item without a source. The README
+may be shorter as a result; accurate and incomplete is always better than polished fiction.
 
 ## Workflow
 
