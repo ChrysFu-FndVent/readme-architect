@@ -4,6 +4,8 @@
 </p>
 <p align="center">
   <a href="https://github.com/ChrysFu-FndVent/readme-architect/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/ChrysFu-FndVent/readme-architect?style=for-the-badge&amp;logo=github" /></a>
+  <a href="https://github.com/ChrysFu-FndVent/readme-architect/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/ChrysFu-FndVent/readme-architect/ci.yml?branch=master&amp;style=for-the-badge&amp;label=CI" /></a>
+  <a href="https://github.com/ChrysFu-FndVent/readme-architect/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ChrysFu-FndVent/readme-architect?style=for-the-badge" /></a>
   <a href="https://github.com/ChrysFu-FndVent/readme-architect/commits/master"><img alt="Last commit" src="https://img.shields.io/github/last-commit/ChrysFu-FndVent/readme-architect?style=for-the-badge" /></a>
   <a href="https://github.com/ChrysFu-FndVent/readme-architect/search?l=Python"><img alt="Top language" src="https://img.shields.io/github/languages/top/ChrysFu-FndVent/readme-architect?style=for-the-badge" /></a>
   <a href="https://github.com/ChrysFu-FndVent/readme-architect/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/ChrysFu-FndVent/readme-architect?style=for-the-badge" /></a>
@@ -15,7 +17,7 @@
 
 <div align="center">
 
-<img src="assets/readme/banner.png" alt="README Architect banner" width="100%" />
+<img src="assets/readme/banner-v0.1.0.png" alt="README Architect banner" width="100%" />
 
 <h1>README Architect</h1>
 
@@ -41,8 +43,8 @@
 
 | | |
 |---|---|
-| **类型** | Agent Skill（开发者工具） |
-| **语言** | Python 3.8+ · 仅标准库 |
+| **类型** | Codex Skill + 离线 CLI（开发者工具） |
+| **语言** | Python 3.9+ · 仅标准库 |
 | **产物** | 单个 `README.md`（中文正文在前，英文正文在后） |
 | **运行于** | macOS · Linux · Windows |
 | **依赖** | 无强制依赖 —— 视觉技能均为可选 |
@@ -92,6 +94,8 @@
 
 - 🔍 **基于证据的分析** —— 纯标准库的 Python 分析器提取语言、包管理器、框架、入口、脚本、CI、许可证以及
   git remote。绝不臆造任何特性。
+- ⌨️ **可直接下载的离线 CLI** —— 无需模型或 API，支持安全候选文件、原地写入、只读预演、统一 diff 和
+  机器可读建议；Release 提供 Linux x86_64 / ARM64、macOS universal2 与 Windows x86_64 可执行文件。
 - 🧩 **项目类型识别** —— 将仓库归类为 `library`、`cli-tool`、`web-app`、`framework`、`ml-ai`、
   `monorepo` 或 `minimal`，并据此调整排版、章节与语气。
 - 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
@@ -133,27 +137,31 @@ flowchart LR
 
 ## 🏗️ 架构
 
-一个纯标准库编排器驱动整条流水线，读取内置的 references/templates，并**仅在探测到时**才调用伴生技能
-（每个都有优雅降级），最终产出一份中文正文在前、英文正文在后的 README。
+项目提供两个真实入口：离线 CLI 走确定性渲染路径；完整 Codex Skill 读取 references/templates，并**仅在探测到时**
+调用视觉能力。两条路径共享同一个证据分析器和校验器。
 
 ```mermaid
 flowchart LR
     A[项目代码库] --> B[analyze_project.py]
     B --> C[项目档案]
-    C --> D[plan_readme_visuals.py]
-    D --> E[视觉方案]
-    F[SKILL.md、references、templates] --> H[README 组装]
-    E --> H
-    I[check_integrations.py] --> J[媒体准备、draw.io 或图像生成]
-    J --> H
-    H --> K[validate_readme.py]
-    K --> L[中英双语 README]
+    C --> D[离线 CLI]
+    D --> E[确定性双语渲染器]
+    C --> F[plan_readme_visuals.py]
+    F --> G[证据化视觉方案]
+    H[SKILL.md、references、templates] --> I[完整 Skill 编排]
+    G --> I
+    J[工具与凭据探测] --> K[真实媒体、draw.io 或图像生成]
+    K --> I
+    E --> L[README 候选]
+    I --> L
+    L --> M[validate_readme.py]
+    M --> N[已校验的中英双语 README]
     classDef source fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
     classDef process fill:#172554,stroke:#818CF8,stroke-width:1.2px,color:#E5E7EB;
     classDef output fill:#064E3B,stroke:#34D399,stroke-width:1.2px,color:#ECFDF5;
-    class A,F,I source;
-    class B,D,H,J,K process;
-    class C,E,L output;
+    class A,H,J source;
+    class B,D,E,F,I,K,M process;
+    class C,G,L,N output;
 ```
 
 > [!TIP]
@@ -214,7 +222,13 @@ flowchart LR
 
 ```text
 readme-architect/
+├── .github/workflows/          # Python 测试矩阵与多平台 Release
+├── agents/openai.yaml          # Codex Skill 界面元数据
 ├── SKILL.md                    # 编排与 7 步工作流
+├── pyproject.toml              # Python 包与 readme-architect 命令入口
+├── readme_architect/
+│   ├── cli.py                  # 安全写入、diff、预演与建议模式
+│   └── renderer.py             # 确定性中英双语渲染器
 ├── references/
 │   ├── section-library.md      # 章节、排序、取舍规则
 │   ├── style-archetypes.md     # 项目类型 → 排版/语气/徽章/章节预设
@@ -231,8 +245,10 @@ readme-architect/
 │   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
 │   ├── prepare_readme_assets.py # 筛选、派生和可选裁切项目图片
 │   ├── plan_readme_visuals.py  # 规划徽章、分隔条和视觉资产
+│   ├── package_skill.py        # 构建确定性的 Codex Skill ZIP
+│   ├── stage_binary.py         # 规范化 Release 文件名与权限
 │   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
-├── tests/                      # 分析与双语布局的回归测试
+├── tests/                      # 分析、CLI、打包与双语布局回归测试
 └── assets/readme/              # 审核通过的 README 视觉资产
 ```
 
@@ -251,8 +267,62 @@ readme-architect/
 
 ## 🚀 快速开始
 
-将 `readme-architect/` 文件夹放到所用 AI 助手配置的技能目录。目录位置由宿主工具决定；本项目不把
-任何特定宿主工具作为前提。
+从 [v0.1.0 Release](https://github.com/ChrysFu-FndVent/readme-architect/releases/tag/v0.1.0)
+下载与你的使用方式和系统对应的文件：
+
+| 用途 / 系统 | Release 文件 |
+|---|---|
+| Codex Skill | `readme-architect-skill-v0.1.0.zip` |
+| Linux x86_64 | `readme-architect-linux-x86_64` |
+| Linux ARM64 | `readme-architect-linux-aarch64` |
+| macOS Intel + Apple silicon | `readme-architect-macos-universal2` |
+| Windows x86_64 | `readme-architect-windows-x86_64.exe` |
+| 完整性校验 | `SHA256SUMS.txt` |
+
+### 安装 Codex Skill
+
+macOS / Linux：
+
+```bash
+unzip readme-architect-skill-v0.1.0.zip -d ~/.codex/skills
+```
+
+Windows PowerShell：
+
+```powershell
+Expand-Archive .\readme-architect-skill-v0.1.0.zip -DestinationPath "$HOME\.codex\skills"
+```
+
+### 运行离线 CLI
+
+macOS / Linux 下载后先添加执行权限：
+
+```bash
+chmod +x readme-architect-macos-universal2
+./readme-architect-macos-universal2 --version
+```
+
+Linux 用户把文件名替换为对应架构的 Linux 资产。Windows PowerShell 直接运行：
+
+```powershell
+.\readme-architect-windows-x86_64.exe --version
+```
+
+Release 可执行文件在 v0.1.0 中未进行开发者签名。校验 SHA-256 后，如 macOS Gatekeeper 或 Windows
+SmartScreen 拦截，请分别通过“隐私与安全性 → 仍要打开”或“更多信息 → 仍要运行”确认本次下载。
+
+以 macOS 资产为例校验下载文件：
+
+```bash
+grep '  readme-architect-macos-universal2$' SHA256SUMS.txt | shasum -a 256 -c -
+```
+
+也可以从源码安装 Python 命令：
+
+```bash
+python -m pip install .
+readme-architect --version
+```
 
 <a id="zh-usage"></a>
 
@@ -264,7 +334,17 @@ readme-architect/
 为这个项目生成一份 README。
 ```
 
-技能会接管后续工作。你也可以直接运行辅助脚本：
+技能会接管后续工作。离线 CLI 不调用模型、图像 API 或外部文档服务，默认只生成候选文件：
+
+| 命令 | 行为 |
+|---|---|
+| `readme-architect PATH` | 写入 `README.generated.md`，保留现有 `README.md` |
+| `readme-architect PATH --write` | 不询问，原子替换 `README.md` |
+| `readme-architect PATH --dry-run` | 只分析和校验，不写文件 |
+| `readme-architect PATH --diff` | 只输出与现有 `README.md` 的统一 diff |
+| `readme-architect PATH --suggest-only --json` | 输出基于证据的机器可读建议 |
+
+也可以直接运行技能的辅助脚本：
 
 ```bash
 # 可选：排除不应作为 README 依据的路径
@@ -298,7 +378,7 @@ python3 -m unittest discover -s tests -v
 
 ## 📋 环境要求
 
-- **Python 3.8+** —— 分析器与校验器只用标准库（无需 `pip install`）。
+- **Release 可执行文件无需 Python。** 从源码安装 CLI 或运行脚本需要 **Python 3.9+**；运行时只使用标准库。
 - **可选：** `drawio`、`nano-banana-pro`、`nano-banana-flash` 或 `generate-gpt-image-2` 技能用于视觉。
   没有它们，README 依然能正常渲染（图表降级为 Mermaid）。
 - **任意系统。** 探测逻辑可跨 macOS / Linux / Windows 移植；运行
@@ -331,8 +411,8 @@ python3 -m unittest discover -s tests -v
 
 | | |
 |---|---|
-| **Type** | Agent Skill (developer tool) |
-| **Language** | Python 3.8+ · standard library only |
+| **Type** | Codex Skill + offline CLI (developer tool) |
+| **Language** | Python 3.9+ · standard library only |
 | **Output** | one `README.md`, Chinese body first and English body second |
 | **Runs on** | macOS · Linux · Windows |
 | **Dependencies** | none required — visual skills are optional |
@@ -385,6 +465,9 @@ badges, tone, and illustrations chosen to fit *this* repository.
 
 - 🔍 **Evidence-based analysis** — a stdlib-only Python analyzer extracts languages, package managers,
   frameworks, entrypoints, scripts, CI, license, and the git remote. No feature is ever invented.
+- ⌨️ **Downloadable offline CLI** — no model or API required; supports safe candidate files, direct
+  writes, read-only dry runs, unified diffs, and machine-readable suggestions. Releases include
+  executables for Linux x86_64 / ARM64, macOS universal2, and Windows x86_64.
 - 🧩 **Archetype detection** — classifies the repo as `library`, `cli-tool`, `web-app`, `framework`,
   `ml-ai`, `monorepo`, or `minimal`, then adapts layout, sections, and tone.
 - 🎨 **Per-project design language** — derives palette, personality, and motifs from the real project
@@ -435,28 +518,32 @@ separation is what makes each README feel bespoke rather than templated.
 
 ## 🏗️ Architecture
 
-One stdlib orchestrator drives the pipeline, reads from bundled references/templates, and calls
-companion skills **only when they're detected** — each with a graceful fallback — to emit one README
-with a Chinese body followed by its English equivalent.
+The project exposes two real entrypoints: the offline CLI follows a deterministic rendering path;
+the full Codex Skill reads bundled references/templates and calls visual capabilities **only when
+they are detected**. Both paths share the same evidence analyzer and validator.
 
 ```mermaid
 flowchart LR
     A[Project codebase] --> B[analyze_project.py]
     B --> C[Project profile]
-    C --> D[plan_readme_visuals.py]
-    D --> E[Visual plan]
-    F[SKILL.md, references, templates] --> H[README assembly]
-    E --> H
-    I[check_integrations.py] --> J[Media preparation, draw.io, or image generation]
-    J --> H
-    H --> K[validate_readme.py]
-    K --> L[Bilingual README]
+    C --> D[Offline CLI]
+    D --> E[Deterministic bilingual renderer]
+    C --> F[plan_readme_visuals.py]
+    F --> G[Evidence-bound visual plan]
+    H[SKILL.md, references, templates] --> I[Full Skill orchestration]
+    G --> I
+    J[Tool and credential detection] --> K[Real media, draw.io, or image generation]
+    K --> I
+    E --> L[README candidate]
+    I --> L
+    L --> M[validate_readme.py]
+    M --> N[Validated bilingual README]
     classDef source fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
     classDef process fill:#172554,stroke:#818CF8,stroke-width:1.2px,color:#E5E7EB;
     classDef output fill:#064E3B,stroke:#34D399,stroke-width:1.2px,color:#ECFDF5;
-    class A,F,I source;
-    class B,D,H,J,K process;
-    class C,E,L output;
+    class A,H,J source;
+    class B,D,E,F,I,K,M process;
+    class C,G,L,N output;
 ```
 
 > [!TIP]
@@ -522,7 +609,13 @@ language — never generic clip-art.
 
 ```text
 readme-architect/
+├── .github/workflows/          # Python test matrix and multi-platform releases
+├── agents/openai.yaml          # Codex Skill interface metadata
 ├── SKILL.md                    # orchestration & 7-step workflow
+├── pyproject.toml              # Python package and readme-architect entrypoint
+├── readme_architect/
+│   ├── cli.py                  # safe writes, diffs, dry runs, and suggestions
+│   └── renderer.py             # deterministic bilingual renderer
 ├── references/
 │   ├── section-library.md      # sections, ordering, when to include
 │   ├── style-archetypes.md     # archetype → layout/tone/badge/section presets
@@ -539,8 +632,10 @@ readme-architect/
 │   ├── check_integrations.py    # detect drawio / image skills / creds (any OS)
 │   ├── prepare_readme_assets.py # select, derive, and optionally crop project images
 │   ├── plan_readme_visuals.py  # plan badges, dividers, and visual assets
+│   ├── package_skill.py        # build the deterministic Codex Skill ZIP
+│   ├── stage_binary.py         # normalize release filenames and permissions
 │   └── validate_readme.py      # anchors / links / placeholders check
-├── tests/                      # analyzer and bilingual-layout regression tests
+├── tests/                      # analyzer, CLI, packaging, and bilingual-layout tests
 └── assets/readme/              # reviewed README visual assets
 ```
 
@@ -559,8 +654,63 @@ Reference files worth reading: [SKILL.md](SKILL.md) ·
 
 ## 🚀 Getting Started
 
-Place the `readme-architect/` folder in the configured skills directory of the AI assistant you use.
-The directory is host-specific; this project does not assume a particular host.
+Download the file for your workflow and platform from the
+[v0.1.0 Release](https://github.com/ChrysFu-FndVent/readme-architect/releases/tag/v0.1.0):
+
+| Use / platform | Release asset |
+|---|---|
+| Codex Skill | `readme-architect-skill-v0.1.0.zip` |
+| Linux x86_64 | `readme-architect-linux-x86_64` |
+| Linux ARM64 | `readme-architect-linux-aarch64` |
+| macOS Intel + Apple silicon | `readme-architect-macos-universal2` |
+| Windows x86_64 | `readme-architect-windows-x86_64.exe` |
+| Integrity manifest | `SHA256SUMS.txt` |
+
+### Install the Codex Skill
+
+macOS / Linux:
+
+```bash
+unzip readme-architect-skill-v0.1.0.zip -d ~/.codex/skills
+```
+
+Windows PowerShell:
+
+```powershell
+Expand-Archive .\readme-architect-skill-v0.1.0.zip -DestinationPath "$HOME\.codex\skills"
+```
+
+### Run the offline CLI
+
+On macOS / Linux, make the downloaded file executable first:
+
+```bash
+chmod +x readme-architect-macos-universal2
+./readme-architect-macos-universal2 --version
+```
+
+Linux users should substitute the asset for their architecture. On Windows PowerShell, run:
+
+```powershell
+.\readme-architect-windows-x86_64.exe --version
+```
+
+The v0.1.0 executables are not developer-signed. After verifying SHA-256, use “Open Anyway” under
+macOS Privacy & Security or “More info → Run anyway” in Windows SmartScreen if the operating system
+blocks the download.
+
+For example, verify the macOS asset with:
+
+```bash
+grep '  readme-architect-macos-universal2$' SHA256SUMS.txt | shasum -a 256 -c -
+```
+
+You can also install the Python command from source:
+
+```bash
+python -m pip install .
+readme-architect --version
+```
 
 <a id="en-usage"></a>
 
@@ -572,7 +722,18 @@ Open any project and ask your agent:
 Generate a README for this project.
 ```
 
-The skill takes over from there. You can also run the helper scripts directly:
+The skill takes over from there. The offline CLI calls no model, image API, or external documentation
+service and writes a candidate by default:
+
+| Command | Behavior |
+|---|---|
+| `readme-architect PATH` | Write `README.generated.md`; preserve the existing `README.md` |
+| `readme-architect PATH --write` | Atomically replace `README.md` without prompting |
+| `readme-architect PATH --dry-run` | Analyze and validate without writing files |
+| `readme-architect PATH --diff` | Print a unified diff against the existing `README.md` only |
+| `readme-architect PATH --suggest-only --json` | Print machine-readable, evidence-backed suggestions |
+
+You can also run the skill helper scripts directly:
 
 ```bash
 # Optional: exclude paths that must not become README evidence.
@@ -607,7 +768,8 @@ python3 -m unittest discover -s tests -v
 
 ## 📋 Requirements
 
-- **Python 3.8+** — the analyzer and validator use only the standard library (no `pip install`).
+- **Release executables need no Python.** Installing the CLI from source or running the scripts needs
+  **Python 3.9+**; runtime code uses only the standard library.
 - **Optional:** the `drawio`, `nano-banana-pro`, `nano-banana-flash`, or `generate-gpt-image-2` skills
   for visuals. The README renders fine without them (diagrams fall back to Mermaid).
 - **Any OS.** Detection is portable across macOS / Linux / Windows; run

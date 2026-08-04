@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "readme-architect"
+version = "0.1.0"
+description = "Offline evidence-bound bilingual README generation and validation"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{name = "Cherys"}]
+keywords = ["readme", "documentation", "developer-tools", "codex", "github"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Documentation",
+  "Topic :: Software Development :: Documentation",
+]
+
+[project.urls]
+Homepage = "https://github.com/ChrysFu-FndVent/readme-architect"
+Repository = "https://github.com/ChrysFu-FndVent/readme-architect"
+Issues = "https://github.com/ChrysFu-FndVent/readme-architect/issues"
+
+[project.scripts]
+readme-architect = "readme_architect.cli:main"
+
+[project.optional-dependencies]
+build = ["build>=1.2", "pyinstaller>=6.10"]
+
+[tool.setuptools]
+packages = ["readme_architect", "scripts"]

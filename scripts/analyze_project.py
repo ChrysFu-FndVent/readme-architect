@@ -259,6 +259,14 @@ def parse_pyproject(path):
             out["deps"].append(low)
     if re.search(r'\[project\.scripts\]|console_scripts', text):
         out["has_scripts"] = True
+    scripts_match = re.search(
+        r'(?ms)^\s*\[project\.scripts\]\s*$\n(.*?)(?=^\s*\[|\Z)', text
+    )
+    if scripts_match:
+        out["entrypoints"] = re.findall(
+            r'(?m)^\s*([A-Za-z0-9_.-]+)\s*=\s*["\'][^"\']+["\']\s*$',
+            scripts_match.group(1),
+        )
     return out
 
 
@@ -401,12 +409,9 @@ def derive_presentation_profile(name, description, all_rel, frameworks):
     }
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--root", default=".")
-    ap.add_argument("--out", default=None)
-    args = ap.parse_args()
-    root = os.path.abspath(args.root)
+def analyze(root):
+    """Return a repository profile without writing files or printing output."""
+    root = os.path.abspath(root)
 
     ignore_patterns = read_ignore_patterns(root)
     langs, total_files, top_entries, all_rel = walk_project(root, ignore_patterns)
@@ -457,6 +462,13 @@ def main():
 
     has_bin = bool(pkg.get("bin")) or bool(pyp.get("has_scripts"))
     scripts = pkg.get("scripts", {})
+    package_bin = pkg.get("bin")
+    if isinstance(package_bin, str):
+        entrypoints = [name] if name else []
+    elif isinstance(package_bin, dict):
+        entrypoints = sorted(package_bin)
+    else:
+        entrypoints = list(pyp.get("entrypoints", []))
 
     remote_url, owner, repo = get_git_remote(root)
     license_id = detect_license(root, manifest_data)
@@ -470,7 +482,10 @@ def main():
         os.path.isdir(os.path.join(root, d)) for d in ("test", "tests", "__tests__", "spec")
     ) or any("test" in p.lower() or "spec" in p.lower() for p in all_rel[:500])
 
-    existing_readmes = [f for f in top_entries if f.lower().startswith("readme")]
+    existing_readmes = [
+        f for f in top_entries
+        if f.lower().startswith("readme") and os.path.isfile(os.path.join(root, f))
+    ]
     is_publishable_lib = bool(
         (pkg and not has_bin and (pkg.get("name") and not pkg.get("scripts", {}).get("start")))
         or ("__init__.py" in {os.path.basename(p) for p in all_rel})
@@ -483,11 +498,14 @@ def main():
         "version": version,
         "license": license_id,
         "languages": [l for l, _ in langs.most_common()],
+        "primary_language": langs.most_common(1)[0][0] if langs else None,
         "language_counts": dict(langs.most_common(12)),
         "package_managers": sorted(set(package_managers)),
+        "manifests": sorted(manifest_data),
         "frameworks": frameworks,
         "frameworks_raw": [d for d in raw_deps if d in FRAMEWORK_SIGNS or d in ML_SIGNS or d in CLI_SIGNS],
         "has_bin": has_bin,
+        "entrypoints": entrypoints,
         "scripts": scripts,
         "monorepo_packages": monorepo_packages,
         "total_files": total_files,
@@ -519,6 +537,16 @@ def main():
     # drop internal keys from output for cleanliness but keep a trimmed top listing
     profile["top_level"] = profile.pop("_top")
     profile.pop("_rel", None)
+
+    return profile
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", default=".")
+    ap.add_argument("--out", default=None)
+    args = ap.parse_args(argv)
+    profile = analyze(args.root)
 
     text = json.dumps(profile, indent=2, ensure_ascii=False)
     if args.out:

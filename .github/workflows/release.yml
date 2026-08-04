@@ -1,0 +1,119 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  binary:
+    name: binary (${{ matrix.asset_name }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            asset_name: readme-architect-linux-x86_64
+            extension: ""
+            pyinstaller_args: ""
+            python_command: python
+            setup_python: true
+          - os: ubuntu-22.04-arm
+            asset_name: readme-architect-linux-aarch64
+            extension: ""
+            pyinstaller_args: ""
+            python_command: python
+            setup_python: true
+          - os: macos-15
+            asset_name: readme-architect-macos-universal2
+            extension: ""
+            pyinstaller_args: "--target-arch universal2"
+            python_command: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+            setup_python: false
+          - os: windows-latest
+            asset_name: readme-architect-windows-x86_64.exe
+            extension: ".exe"
+            pyinstaller_args: ""
+            python_command: python
+            setup_python: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        if: matrix.setup_python
+        with:
+          python-version: "3.12"
+      - name: Install universal2 Python
+        if: ${{ !matrix.setup_python }}
+        env:
+          PYTHON_PACKAGE: https://www.python.org/ftp/python/3.12.10/python-3.12.10-macos11.pkg
+        run: |
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/python-universal2.pkg" "$PYTHON_PACKAGE"
+          sudo installer -pkg "$RUNNER_TEMP/python-universal2.pkg" -target /
+          "${{ matrix.python_command }}" --version
+      - name: Install build dependencies
+        run: ${{ matrix.python_command }} -m pip install --upgrade pip pyinstaller
+      - name: Build standalone executable
+        run: ${{ matrix.python_command }} -m PyInstaller --clean --onefile --name readme-architect ${{ matrix.pyinstaller_args }} scripts/standalone_entry.py
+      - name: Stage release filename
+        run: >-
+          ${{ matrix.python_command }} scripts/stage_binary.py
+          --source "dist/readme-architect${{ matrix.extension }}"
+          --output "release/${{ matrix.asset_name }}"
+      - name: Smoke-test standalone executable
+        run: release/${{ matrix.asset_name }} --version
+      - name: Verify universal2 architectures
+        if: ${{ !matrix.setup_python }}
+        run: lipo release/${{ matrix.asset_name }} -verify_arch x86_64 arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: release/${{ matrix.asset_name }}
+          if-no-files-found: error
+
+  skill:
+    name: Codex skill archive
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build skill archive
+        run: python scripts/package_skill.py --output "release/readme-architect-skill-${GITHUB_REF_NAME}.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: readme-architect-skill
+          path: release/*.zip
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    needs: [binary, skill]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - name: Create SHA-256 manifest
+        working-directory: release
+        run: sha256sum * > SHA256SUMS.txt
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "${GITHUB_REF_NAME}" release/*
+          --repo "${GITHUB_REPOSITORY}"
+          --title "README Architect ${GITHUB_REF_NAME}"
+          --generate-notes

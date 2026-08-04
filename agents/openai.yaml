@@ -1,0 +1,4 @@
+interface:
+  display_name: "README Architect"
+  short_description: "Evidence-bound bilingual README generation and previews"
+  default_prompt: "Use $readme-architect to analyze this repository and produce a verified bilingual README candidate."

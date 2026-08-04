@@ -1,6 +1,6 @@
 ---
 name: readme-architect
-description: Automatically generate a personalized, style-matched bilingual README for a project by analyzing its code and files. The single README.md keeps its title and tagline in English, then presents Chinese content before its English equivalent. Detects the project's archetype (library, CLI, web/app, framework, ML/AI, monorepo, minimal) and adapts layout, sections, badges, and tone accordingly. Integrates the drawio skill (with a Mermaid fallback) for architecture/flow diagrams and the nano-banana-pro / nano-banana-flash / generate-gpt-image-2 skills for banners/logos/illustrations. Use when the user asks to create, generate, write, refresh, or beautify a README / project documentation from a codebase.
+description: Automatically generate a personalized, style-matched bilingual README for a project by analyzing its code and files. The single README.md keeps its title and tagline in English, then presents Chinese content before its English equivalent. Detects the project's archetype (library, CLI, web/app, framework, ML/AI, monorepo, minimal) and adapts layout, sections, badges, and tone accordingly. Includes a deterministic offline CLI for safe candidate generation, dry runs, diffs, and evidence-backed suggestions. Integrates drawio (with a Mermaid fallback) and optional image-generation skills for richer visuals. Use when the user asks to create, generate, write, refresh, or beautify README or project documentation from a codebase.
 ---
 
 # README Architect
@@ -12,6 +12,16 @@ Generate a README that looks like it was hand-crafted for **this specific projec
 This skill runs **fully automatically** by default: analyze → classify → select components → generate visuals → assemble bilingual README → validate → report. Do not stop to ask questions unless a required input is missing (e.g. no readable project directory) or an outward-facing action needs consent (e.g. overwriting an existing hand-written README, or publishing).
 
 Default output: one bilingual **`README.md`**. Render the document title and its short tagline in English once, then present the Chinese body first and the English body second. Use stable anchors and a language switch at the top. If the user specifies a single language, produce only that one.
+
+## Offline CLI
+
+Use the bundled `readme-architect` command when the user needs a deterministic, model-free result or
+wants to preview changes before invoking the richer skill workflow. Keep its safety contract stable:
+generate `README.generated.md` by default, require `--write` to replace `README.md`, and make
+`--dry-run`, plain `--diff`, and `--suggest-only` read-only. Read
+[references/offline-cli.md](references/offline-cli.md) for commands, output paths, and capability
+boundaries. Do not imply that the offline CLI can call Codex, translate arbitrary prose, or generate
+AI raster illustrations.
 
 ## Evidence gate
 
@@ -199,6 +209,7 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - [references/visual-composition.md](references/visual-composition.md) — evidence-bound badge plans, separators, image briefs, and component budgets.
 - [references/input-controls.md](references/input-controls.md) — `.readme-architectignore` syntax and evidence-boundary guidance.
 - [references/presentation-recipes.md](references/presentation-recipes.md) — composable presentation signals, component choices, badge styles, diagrams, and visual budgets.
+- [references/offline-cli.md](references/offline-cli.md) — deterministic CLI commands, write boundaries, and offline visual behavior.
 - `templates/*.md` — ready-to-adapt README skeletons per archetype.
 
 ## Scripts
@@ -208,3 +219,5 @@ Summarize: detected archetype & style, sections included (and notable ones skipp
 - `scripts/prepare_readme_assets.py` — rank, copy, and optionally center-crop project media into derived README assets with a JSON manifest (Step 4).
 - `scripts/plan_readme_visuals.py` — derive badge candidates, visual density, dividers, and requested assets from evidence (Step 3).
 - `scripts/validate_readme.py` — validate sections, TOC anchors, local paths, placeholders (Step 6).
+- `scripts/package_skill.py` — build the versioned Codex skill archive for GitHub Releases.
+- `readme_architect/` — offline renderer and CLI implementation.
