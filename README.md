@@ -13,7 +13,7 @@
 <!-- README-ARCHITECT: visual-shell end -->
 
 <a id="readme-top"></a>
-<div align="right"><a href="#简体中文">简体中文</a> | <a href="#english">English</a></div>
+<div align="right"><a href="#english">English</a> | <a href="#简体中文">简体中文</a></div>
 
 <div align="center">
 
@@ -31,374 +31,6 @@
 </p>
 
 </div>
-
-<a id="简体中文"></a>
-
-<table>
-<tr><td>
-
-**一眼概览**
-
-</td><td>
-
-| | |
-|---|---|
-| **类型** | Codex Skill + 离线 CLI（开发者工具） |
-| **语言** | Python 3.9+ · 仅标准库 |
-| **产物** | 单个 `README.md`（中文正文在前，英文正文在后） |
-| **运行于** | macOS · Linux · Windows |
-| **依赖** | 无强制依赖 —— 视觉技能均为可选 |
-
-</td></tr>
-</table>
-
-<details>
-<summary>📑 目录 · Table of Contents</summary>
-
-- [✨ 简介](#zh-about)
-- [🎯 特性](#zh-features)
-- [⚙️ 工作原理](#zh-how-it-works)
-- [🏗️ 架构](#zh-architecture)
-- [🧩 项目类型（Archetype）](#zh-archetypes)
-- [🎨 个性化装饰工具箱](#zh-personalization)
-- [🖼️ 视觉联动](#zh-visuals)
-- [📂 项目结构](#zh-structure)
-- [🚀 快速开始](#zh-getting-started)
-- [💡 使用方法](#zh-usage)
-- [📋 环境要求](#zh-requirements)
-- [📄 许可证](#zh-license)
-- [🙏 致谢](#zh-acknowledgments)
-
-</details>
-
----
-
-<a id="zh-about"></a>
-
-## ✨ 简介
-
-**README Architect** 是一个用于生成 README 的 Agent Skill。它读取项目真实的代码与文件，写出一份
-**看起来是为该项目手工打磨**的 README —— 而不是通用的填空模板。
-
-它**全自动**运行：分析 → 分类 → 推导设计语言 → 挑选章节 → 生成视觉 → 组装双语 README → 校验。
-产物是一个 `README.md`：标题和短简介仅使用英文，完整中文正文在前，完整英文正文在后；两部分的排版、徽章、
-语气与插图都为**当前这个仓库**量身选择。
-
-> [!TIP]
-> 核心在于**契合**。精简的库会得到信息密集、以内容为先的 README；Web 应用则得到带突出横幅、项目徽章、
-> 演示入口和功能网格的居中开场区。两者都由代码中的真实证据驱动。
-
-<a id="zh-features"></a>
-
-## 🎯 特性
-
-- 🔍 **基于证据的分析** —— 纯标准库的 Python 分析器提取语言、包管理器、框架、入口、脚本、CI、许可证以及
-  git remote。绝不臆造任何特性。
-- ⌨️ **可直接下载的离线 CLI** —— 无需模型或 API，支持安全候选文件、原地写入、只读预演、统一 diff 和
-  机器可读建议；Release 提供 Linux x86_64 / ARM64、macOS universal2 与 Windows x86_64 可执行文件。
-- 🧩 **项目类型识别** —— 将仓库归类为 `library`、`cli-tool`、`web-app`、`framework`、`ml-ai`、
-  `monorepo` 或 `minimal`，并据此调整排版、章节与语气。
-- 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
-  配图生成提示词。
-- 🌐 **默认双语** —— 单个 `README.md` 中完整中文正文在前、英文正文在后，标题和短简介只出现英文版一次。
-- 🖼️ **视觉编排与高质量资产** —— 按相关性筛选并无损派生项目内真实图片；从 CI、许可证、语言、测试、容器和配置证据生成彩色状态徽章；按项目气质规划横幅、插图、双语架构图和渐变/emoji 分隔条。所有生成图片都须视觉复核，绝不伪造状态或产品截图。
-- 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
-  换到别人的环境、用别的 API 密钥照样跑通。
-- 🧹 **可控的分析范围** —— 通过 `.readme-architectignore` 排除敏感、生成或无关文件，让结论只基于应当公开的项目证据。
-- 🎭 **可组合的展示方案** —— 从项目名称、简介和文件路径中提取可核对的展示信号，并按需组合产品体验、工作流、基础设施、数据研究、信任治理、学习社区、创意展示与 AI：选择真正有用的演示图库、学习路径、权限流、结果表、架构图或相关插图。
-- 🧰 **9 项装饰工具箱** —— 徽章、对齐 HTML 块、分割线、恰当的 emoji、可折叠 `<details>`、表格、
-  动态数据卡片、`> [!NOTE]` 提示块以及锚点导航。
-- ✅ **内置校验器** —— 检查锚点可解析、本地资源存在、无模板占位符残留；默认双语布局还会检查共享英文标题、语言切换和中文优先顺序。
-
-<a id="zh-how-it-works"></a>
-
-## ⚙️ 工作原理
-
-一条全自动流水线，把代码库变成一份成品、已校验的 README：
-
-```mermaid
-flowchart LR
-    A[📂 分析<br/>代码与文件] --> B[🧩 分类<br/>项目类型]
-    B --> C[🎨 推导<br/>设计语言]
-    C --> D[🧱 选择<br/>章节]
-    D --> E[🖼️ 生成<br/>视觉]
-    E --> F[📝 组装<br/>中英双语]
-    F --> G[✅ 校验]
-    classDef step fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
-    class A,B,C,D,E,F,G step;
-```
-
-项目类型决定**骨架**，项目自身的设计语言决定**皮肤**。正是这种分离，让每份 README 都显得量身定制，而非
-套模板。
-
-<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
-
-<a id="zh-architecture"></a>
-
-## 🏗️ 架构
-
-项目提供两个真实入口：离线 CLI 走确定性渲染路径；完整 Codex Skill 读取 references/templates，并**仅在探测到时**
-调用视觉能力。两条路径共享同一个证据分析器和校验器。
-
-```mermaid
-flowchart LR
-    A[项目代码库] --> B[analyze_project.py]
-    B --> C[项目档案]
-    C --> D[离线 CLI]
-    D --> E[确定性双语渲染器]
-    C --> F[plan_readme_visuals.py]
-    F --> G[证据化视觉方案]
-    H[SKILL.md、references、templates] --> I[完整 Skill 编排]
-    G --> I
-    J[工具与凭据探测] --> K[真实媒体、draw.io 或图像生成]
-    K --> I
-    E --> L[README 候选]
-    I --> L
-    L --> M[validate_readme.py]
-    M --> N[已校验的中英双语 README]
-    classDef source fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
-    classDef process fill:#172554,stroke:#818CF8,stroke-width:1.2px,color:#E5E7EB;
-    classDef output fill:#064E3B,stroke:#34D399,stroke-width:1.2px,color:#ECFDF5;
-    class A,H,J source;
-    class B,D,E,F,I,K,M process;
-    class C,G,L,N output;
-```
-
-> [!TIP]
-> 此图的节点和箭头与 English 部分完全一致，只翻译读者可见标签。draw.io 可用时，技能也能导出同一模型的
-> PNG；否则 GitHub 原生 Mermaid 就是可靠的无二进制降级路径。
-
-<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
-
-<a id="zh-archetypes"></a>
-
-## 🧩 项目类型（Archetype）
-
-| 类型 | 识别依据 | 排版 | 默认视觉 |
-|------|----------|------|----------|
-| `library` | 公开 API、已发布包、无应用入口 | 经典、密集 | 可选 logo |
-| `cli-tool` | `bin` 字段、argparse/click/cobra/commander | 紧凑、左对齐 | 流程图 |
-| `web-app` | React/Vue/Next/Django/Rails 应用、部署配置 | 居中开场区：横幅、徽章、演示入口 | 横幅 + 架构图 |
-| `framework` | 大型开发工具、插件生态、强品牌 | 品牌开场区：横幅、徽章、文档入口 | 横幅 + logo + 图 |
-| `ml-ai` | notebook、torch/tf/transformers、数据集、论文 | 研究导向 | 流水线图 |
-| `monorepo` | pnpm/yarn/nx/turbo/cargo 工作区 | 包列表表格 | 模块关系图 |
-| `minimal` | 极小的配置/纯文档仓库 | 精简、单栏 | 无 |
-
-<a id="zh-personalization"></a>
-
-## 🎨 个性化装饰工具箱
-
-技能会运用的九项装饰技术 —— **依项目语气调校**，绝不盲目堆砌（库精简，Web 应用/框架丰富）：
-
-| # | 技术 | # | 技术 |
-|---|------|---|------|
-| 1 | 徽章装饰（静态与动态） | 6 | 对比 / 参数表格 |
-| 2 | 居中标题与装饰分割线 | 7 | 动态数据卡片（星标、统计） |
-| 3 | 灵活对齐与多栏排版 | 8 | `> [!NOTE]` 提示块与代码高亮 |
-| 4 | 恰当的分区 emoji | 9 | 锚点导航目录 |
-| 5 | 可折叠 `<details>` 详情块 | | |
-
-<a id="zh-visuals"></a>
-
-## 🖼️ 视觉联动
-
-视觉资产**仅在有帮助时**才生成，且每个提示词都从项目的设计语言推导而来 —— 绝非通用素材图。
-
-| 资产 | 工具 | 何时生成 |
-|------|------|----------|
-| 架构 / 流程 / 时序图 | [`drawio`](https://www.drawio.com) → 原生 **Mermaid** 兜底 | 多组件系统、流水线 |
-| 横幅 / logo / 插图 | 宿主 `imagegen` → [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | 真实项目媒体无法表达概念、且视觉方案明确需要 |
-
-> [!WARNING]
-> 技能**绝不伪造产品截图或虚假指标。** 只有当仓库里已存在真实截图时才使用；图像生成仅限于横幅、logo 与
-> 抽象插画。若生成器或其凭据不可用，README 会沿链路优雅降级（图表降到原生 Mermaid），并始终标注任何省略。
-
-<a id="zh-structure"></a>
-
-## 📂 项目结构
-
-<details>
-<summary>展开查看结构</summary>
-
-```text
-readme-architect/
-├── .github/workflows/          # Python 测试矩阵与多平台 Release
-├── agents/openai.yaml          # Codex Skill 界面元数据
-├── SKILL.md                    # 编排与 7 步工作流
-├── pyproject.toml              # Python 包与 readme-architect 命令入口
-├── readme_architect/
-│   ├── cli.py                  # 安全写入、diff、预演与建议模式
-│   └── renderer.py             # 确定性中英双语渲染器
-├── references/
-│   ├── section-library.md      # 章节、排序、取舍规则
-│   ├── style-archetypes.md     # 项目类型 → 排版/语气/徽章/章节预设
-│   ├── badges.md               # shields.io 徽章目录
-│   ├── decoration-toolkit.md   # 9 项个性化技术
-│   ├── input-controls.md       # 忽略规则与双语输出契约
-│   ├── presentation-recipes.md # 可组合信号驱动的徽章、图表与配图
-│   ├── bilingual-architecture.md # 清晰的中英配对架构图规范
-│   ├── visual-composition.md   # 徽章、分隔条与插图的证据化编排
-│   └── visual-assets.md        # 项目媒体 / drawio / imagegen 联动
-├── templates/                  # 各项目类型的 README 骨架
-├── scripts/
-│   ├── analyze_project.py      # 仓库 → profile.json（纯标准库）
-│   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
-│   ├── prepare_readme_assets.py # 筛选、派生和可选裁切项目图片
-│   ├── plan_readme_visuals.py  # 规划徽章、分隔条和视觉资产
-│   ├── package_skill.py        # 构建确定性的 Codex Skill ZIP
-│   ├── stage_binary.py         # 规范化 Release 文件名与权限
-│   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
-├── tests/                      # 分析、CLI、打包与双语布局回归测试
-└── assets/readme/              # 审核通过的 README 视觉资产
-```
-
-</details>
-
-值得一读的参考文件：[SKILL.md](SKILL.md) ·
-[section-library](references/section-library.md) ·
-[style-archetypes](references/style-archetypes.md) ·
-[decoration-toolkit](references/decoration-toolkit.md) ·
-[visual-composition](references/visual-composition.md) ·
-[visual-assets](references/visual-assets.md) ·
-[input-controls](references/input-controls.md) ·
-[presentation-recipes](references/presentation-recipes.md)。
-
-<a id="zh-getting-started"></a>
-
-## 🚀 快速开始
-
-从 [v0.1.0 Release](https://github.com/ChrysFu-FndVent/readme-architect/releases/tag/v0.1.0)
-下载与你的使用方式和系统对应的文件：
-
-| 用途 / 系统 | Release 文件 |
-|---|---|
-| Codex Skill | `readme-architect-skill-v0.1.0.zip` |
-| Linux x86_64 | `readme-architect-linux-x86_64` |
-| Linux ARM64 | `readme-architect-linux-aarch64` |
-| macOS Intel + Apple silicon | `readme-architect-macos-universal2` |
-| Windows x86_64 | `readme-architect-windows-x86_64.exe` |
-| 完整性校验 | `SHA256SUMS.txt` |
-
-### 安装 Codex Skill
-
-macOS / Linux：
-
-```bash
-unzip readme-architect-skill-v0.1.0.zip -d ~/.codex/skills
-```
-
-Windows PowerShell：
-
-```powershell
-Expand-Archive .\readme-architect-skill-v0.1.0.zip -DestinationPath "$HOME\.codex\skills"
-```
-
-### 运行离线 CLI
-
-macOS / Linux 下载后先添加执行权限：
-
-```bash
-chmod +x readme-architect-macos-universal2
-./readme-architect-macos-universal2 --version
-```
-
-Linux 用户把文件名替换为对应架构的 Linux 资产。Windows PowerShell 直接运行：
-
-```powershell
-.\readme-architect-windows-x86_64.exe --version
-```
-
-Release 可执行文件在 v0.1.0 中未进行开发者签名。校验 SHA-256 后，如 macOS Gatekeeper 或 Windows
-SmartScreen 拦截，请分别通过“隐私与安全性 → 仍要打开”或“更多信息 → 仍要运行”确认本次下载。
-
-以 macOS 资产为例校验下载文件：
-
-```bash
-grep '  readme-architect-macos-universal2$' SHA256SUMS.txt | shasum -a 256 -c -
-```
-
-也可以从源码安装 Python 命令：
-
-```bash
-python -m pip install .
-readme-architect --version
-```
-
-<a id="zh-usage"></a>
-
-## 💡 使用方法
-
-打开任意项目，对你的 agent 说：
-
-```text
-为这个项目生成一份 README。
-```
-
-技能会接管后续工作。离线 CLI 不调用模型、图像 API 或外部文档服务，默认只生成候选文件：
-
-| 命令 | 行为 |
-|---|---|
-| `readme-architect PATH` | 写入 `README.generated.md`，保留现有 `README.md` |
-| `readme-architect PATH --write` | 不询问，原子替换 `README.md` |
-| `readme-architect PATH --dry-run` | 只分析和校验，不写文件 |
-| `readme-architect PATH --diff` | 只输出与现有 `README.md` 的统一 diff |
-| `readme-architect PATH --suggest-only --json` | 输出基于证据的机器可读建议 |
-
-也可以直接运行技能的辅助脚本：
-
-```bash
-# 可选：排除不应作为 README 依据的路径
-cat > .readme-architectignore <<'EOF'
-internal/
-*.snapshot
-EOF
-
-# 1. 把仓库分析成结构化 profile
-python3 scripts/analyze_project.py --root . --out .readme-architect/profile.json
-
-# 2. 根据可核对的证据规划徽章和视觉预算
-python3 scripts/plan_readme_visuals.py \
-  --profile .readme-architect/profile.json \
-  --out .readme-architect/visual-plan.json
-
-# 3. 校验默认的中英双语 README
-python3 scripts/validate_readme.py --bilingual README.md
-
-# 4. 运行内置回归测试
-python3 -m unittest discover -s tests -v
-```
-
-> [!TIP]
-> 如果已存在一份实质性的手写 `README.md`，技能会写入 `README.generated.md` 而不会静默覆盖你的成果 ——
-> 除非你明确要求替换原文件。
-
-<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
-
-<a id="zh-requirements"></a>
-
-## 📋 环境要求
-
-- **Release 可执行文件无需 Python。** 从源码安装 CLI 或运行脚本需要 **Python 3.9+**；运行时只使用标准库。
-- **可选：** `drawio`、`nano-banana-pro`、`nano-banana-flash` 或 `generate-gpt-image-2` 技能用于视觉。
-  没有它们，README 依然能正常渲染（图表降级为 Mermaid）。
-- **任意系统。** 探测逻辑可跨 macOS / Linux / Windows 移植；运行
-  `python3 scripts/check_integrations.py` 即可查看本机可用能力。若你的技能装在其他位置，可用
-  `README_ARCHITECT_SKILL_ROOTS` 扩展技能搜索路径。
-
-<a id="zh-license"></a>
-
-## 📄 许可证
-
-基于 **MIT 许可证** 发布。详见 [`LICENSE`](LICENSE)。
-
-<a id="zh-acknowledgments"></a>
-
-## 🙏 致谢
-
-- [standard-readme](https://github.com/RichardLitt/standard-readme) —— 章节排序规范。
-- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) —— 居中项目开场区的排版灵感。
-- [Shields.io](https://shields.io) —— 徽章。
-- [Mermaid](https://mermaid.js.org) —— 可在 GitHub 原生渲染的图表。
 
 <a id="english"></a>
 
@@ -790,3 +422,371 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 - [Best-README-Template](https://github.com/othneildrew/Best-README-Template) — centered project-opening layout inspiration.
 - [Shields.io](https://shields.io) — the badges.
 - [Mermaid](https://mermaid.js.org) — native diagrams that render on GitHub.
+
+<a id="简体中文"></a>
+
+<table>
+<tr><td>
+
+**一眼概览**
+
+</td><td>
+
+| | |
+|---|---|
+| **类型** | Codex Skill + 离线 CLI（开发者工具） |
+| **语言** | Python 3.9+ · 仅标准库 |
+| **产物** | 单个 `README.md`（中文正文在前，英文正文在后） |
+| **运行于** | macOS · Linux · Windows |
+| **依赖** | 无强制依赖 —— 视觉技能均为可选 |
+
+</td></tr>
+</table>
+
+<details>
+<summary>📑 目录 · Table of Contents</summary>
+
+- [✨ 简介](#zh-about)
+- [🎯 特性](#zh-features)
+- [⚙️ 工作原理](#zh-how-it-works)
+- [🏗️ 架构](#zh-architecture)
+- [🧩 项目类型（Archetype）](#zh-archetypes)
+- [🎨 个性化装饰工具箱](#zh-personalization)
+- [🖼️ 视觉联动](#zh-visuals)
+- [📂 项目结构](#zh-structure)
+- [🚀 快速开始](#zh-getting-started)
+- [💡 使用方法](#zh-usage)
+- [📋 环境要求](#zh-requirements)
+- [📄 许可证](#zh-license)
+- [🙏 致谢](#zh-acknowledgments)
+
+</details>
+
+---
+
+<a id="zh-about"></a>
+
+## ✨ 简介
+
+**README Architect** 是一个用于生成 README 的 Agent Skill。它读取项目真实的代码与文件，写出一份
+**看起来是为该项目手工打磨**的 README —— 而不是通用的填空模板。
+
+它**全自动**运行：分析 → 分类 → 推导设计语言 → 挑选章节 → 生成视觉 → 组装双语 README → 校验。
+产物是一个 `README.md`：标题和短简介仅使用英文，完整中文正文在前，完整英文正文在后；两部分的排版、徽章、
+语气与插图都为**当前这个仓库**量身选择。
+
+> [!TIP]
+> 核心在于**契合**。精简的库会得到信息密集、以内容为先的 README；Web 应用则得到带突出横幅、项目徽章、
+> 演示入口和功能网格的居中开场区。两者都由代码中的真实证据驱动。
+
+<a id="zh-features"></a>
+
+## 🎯 特性
+
+- 🔍 **基于证据的分析** —— 纯标准库的 Python 分析器提取语言、包管理器、框架、入口、脚本、CI、许可证以及
+  git remote。绝不臆造任何特性。
+- ⌨️ **可直接下载的离线 CLI** —— 无需模型或 API，支持安全候选文件、原地写入、只读预演、统一 diff 和
+  机器可读建议；Release 提供 Linux x86_64 / ARM64、macOS universal2 与 Windows x86_64 可执行文件。
+- 🧩 **项目类型识别** —— 将仓库归类为 `library`、`cli-tool`、`web-app`、`framework`、`ml-ai`、
+  `monorepo` 或 `minimal`，并据此调整排版、章节与语气。
+- 🎨 **按项目定制的设计语言** —— 从真实项目中推导调色板、性格与意象，让它们**同时**驱动排版风格**和**每一个
+  配图生成提示词。
+- 🌐 **默认双语** —— 单个 `README.md` 中完整中文正文在前、英文正文在后，标题和短简介只出现英文版一次。
+- 🖼️ **视觉编排与高质量资产** —— 按相关性筛选并无损派生项目内真实图片；从 CI、许可证、语言、测试、容器和配置证据生成彩色状态徽章；按项目气质规划横幅、插图、双语架构图和渐变/emoji 分隔条。所有生成图片都须视觉复核，绝不伪造状态或产品截图。
+- 🖥️ **可移植，不绑定单机** —— 在*当前*机器上探测工具、凭据与技能安装路径（macOS / Linux / Windows）；
+  换到别人的环境、用别的 API 密钥照样跑通。
+- 🧹 **可控的分析范围** —— 通过 `.readme-architectignore` 排除敏感、生成或无关文件，让结论只基于应当公开的项目证据。
+- 🎭 **可组合的展示方案** —— 从项目名称、简介和文件路径中提取可核对的展示信号，并按需组合产品体验、工作流、基础设施、数据研究、信任治理、学习社区、创意展示与 AI：选择真正有用的演示图库、学习路径、权限流、结果表、架构图或相关插图。
+- 🧰 **9 项装饰工具箱** —— 徽章、对齐 HTML 块、分割线、恰当的 emoji、可折叠 `<details>`、表格、
+  动态数据卡片、`> [!NOTE]` 提示块以及锚点导航。
+- ✅ **内置校验器** —— 检查锚点可解析、本地资源存在、无模板占位符残留；默认双语布局还会检查共享英文标题、语言切换和中文优先顺序。
+
+<a id="zh-how-it-works"></a>
+
+## ⚙️ 工作原理
+
+一条全自动流水线，把代码库变成一份成品、已校验的 README：
+
+```mermaid
+flowchart LR
+    A[📂 分析<br/>代码与文件] --> B[🧩 分类<br/>项目类型]
+    B --> C[🎨 推导<br/>设计语言]
+    C --> D[🧱 选择<br/>章节]
+    D --> E[🖼️ 生成<br/>视觉]
+    E --> F[📝 组装<br/>中英双语]
+    F --> G[✅ 校验]
+    classDef step fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
+    class A,B,C,D,E,F,G step;
+```
+
+项目类型决定**骨架**，项目自身的设计语言决定**皮肤**。正是这种分离，让每份 README 都显得量身定制，而非
+套模板。
+
+<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
+
+<a id="zh-architecture"></a>
+
+## 🏗️ 架构
+
+项目提供两个真实入口：离线 CLI 走确定性渲染路径；完整 Codex Skill 读取 references/templates，并**仅在探测到时**
+调用视觉能力。两条路径共享同一个证据分析器和校验器。
+
+```mermaid
+flowchart LR
+    A[项目代码库] --> B[analyze_project.py]
+    B --> C[项目档案]
+    C --> D[离线 CLI]
+    D --> E[确定性双语渲染器]
+    C --> F[plan_readme_visuals.py]
+    F --> G[证据化视觉方案]
+    H[SKILL.md、references、templates] --> I[完整 Skill 编排]
+    G --> I
+    J[工具与凭据探测] --> K[真实媒体、draw.io 或图像生成]
+    K --> I
+    E --> L[README 候选]
+    I --> L
+    L --> M[validate_readme.py]
+    M --> N[已校验的中英双语 README]
+    classDef source fill:#0B1221,stroke:#38BDF8,stroke-width:1.2px,color:#E5E7EB;
+    classDef process fill:#172554,stroke:#818CF8,stroke-width:1.2px,color:#E5E7EB;
+    classDef output fill:#064E3B,stroke:#34D399,stroke-width:1.2px,color:#ECFDF5;
+    class A,H,J source;
+    class B,D,E,F,I,K,M process;
+    class C,G,L,N output;
+```
+
+> [!TIP]
+> 此图的节点和箭头与 English 部分完全一致，只翻译读者可见标签。draw.io 可用时，技能也能导出同一模型的
+> PNG；否则 GitHub 原生 Mermaid 就是可靠的无二进制降级路径。
+
+<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
+
+<a id="zh-archetypes"></a>
+
+## 🧩 项目类型（Archetype）
+
+| 类型 | 识别依据 | 排版 | 默认视觉 |
+|------|----------|------|----------|
+| `library` | 公开 API、已发布包、无应用入口 | 经典、密集 | 可选 logo |
+| `cli-tool` | `bin` 字段、argparse/click/cobra/commander | 紧凑、左对齐 | 流程图 |
+| `web-app` | React/Vue/Next/Django/Rails 应用、部署配置 | 居中开场区：横幅、徽章、演示入口 | 横幅 + 架构图 |
+| `framework` | 大型开发工具、插件生态、强品牌 | 品牌开场区：横幅、徽章、文档入口 | 横幅 + logo + 图 |
+| `ml-ai` | notebook、torch/tf/transformers、数据集、论文 | 研究导向 | 流水线图 |
+| `monorepo` | pnpm/yarn/nx/turbo/cargo 工作区 | 包列表表格 | 模块关系图 |
+| `minimal` | 极小的配置/纯文档仓库 | 精简、单栏 | 无 |
+
+<a id="zh-personalization"></a>
+
+## 🎨 个性化装饰工具箱
+
+技能会运用的九项装饰技术 —— **依项目语气调校**，绝不盲目堆砌（库精简，Web 应用/框架丰富）：
+
+| # | 技术 | # | 技术 |
+|---|------|---|------|
+| 1 | 徽章装饰（静态与动态） | 6 | 对比 / 参数表格 |
+| 2 | 居中标题与装饰分割线 | 7 | 动态数据卡片（星标、统计） |
+| 3 | 灵活对齐与多栏排版 | 8 | `> [!NOTE]` 提示块与代码高亮 |
+| 4 | 恰当的分区 emoji | 9 | 锚点导航目录 |
+| 5 | 可折叠 `<details>` 详情块 | | |
+
+<a id="zh-visuals"></a>
+
+## 🖼️ 视觉联动
+
+视觉资产**仅在有帮助时**才生成，且每个提示词都从项目的设计语言推导而来 —— 绝非通用素材图。
+
+| 资产 | 工具 | 何时生成 |
+|------|------|----------|
+| 架构 / 流程 / 时序图 | [`drawio`](https://www.drawio.com) → 原生 **Mermaid** 兜底 | 多组件系统、流水线 |
+| 横幅 / logo / 插图 | 宿主 `imagegen` → [`nano-banana-pro`](https://github.com/ChrysFu-FndVent) → [`nano-banana-flash`](https://github.com/ChrysFu-FndVent) → [`generate-gpt-image-2`](https://github.com/ChrysFu-FndVent) | 真实项目媒体无法表达概念、且视觉方案明确需要 |
+
+> [!WARNING]
+> 技能**绝不伪造产品截图或虚假指标。** 只有当仓库里已存在真实截图时才使用；图像生成仅限于横幅、logo 与
+> 抽象插画。若生成器或其凭据不可用，README 会沿链路优雅降级（图表降到原生 Mermaid），并始终标注任何省略。
+
+<a id="zh-structure"></a>
+
+## 📂 项目结构
+
+<details>
+<summary>展开查看结构</summary>
+
+```text
+readme-architect/
+├── .github/workflows/          # Python 测试矩阵与多平台 Release
+├── agents/openai.yaml          # Codex Skill 界面元数据
+├── SKILL.md                    # 编排与 7 步工作流
+├── pyproject.toml              # Python 包与 readme-architect 命令入口
+├── readme_architect/
+│   ├── cli.py                  # 安全写入、diff、预演与建议模式
+│   └── renderer.py             # 确定性中英双语渲染器
+├── references/
+│   ├── section-library.md      # 章节、排序、取舍规则
+│   ├── style-archetypes.md     # 项目类型 → 排版/语气/徽章/章节预设
+│   ├── badges.md               # shields.io 徽章目录
+│   ├── decoration-toolkit.md   # 9 项个性化技术
+│   ├── input-controls.md       # 忽略规则与双语输出契约
+│   ├── presentation-recipes.md # 可组合信号驱动的徽章、图表与配图
+│   ├── bilingual-architecture.md # 清晰的中英配对架构图规范
+│   ├── visual-composition.md   # 徽章、分隔条与插图的证据化编排
+│   └── visual-assets.md        # 项目媒体 / drawio / imagegen 联动
+├── templates/                  # 各项目类型的 README 骨架
+├── scripts/
+│   ├── analyze_project.py      # 仓库 → profile.json（纯标准库）
+│   ├── check_integrations.py    # 探测 drawio / 图像技能 / 凭据（任意系统）
+│   ├── prepare_readme_assets.py # 筛选、派生和可选裁切项目图片
+│   ├── plan_readme_visuals.py  # 规划徽章、分隔条和视觉资产
+│   ├── package_skill.py        # 构建确定性的 Codex Skill ZIP
+│   ├── stage_binary.py         # 规范化 Release 文件名与权限
+│   └── validate_readme.py      # 锚点 / 链接 / 占位符校验
+├── tests/                      # 分析、CLI、打包与双语布局回归测试
+└── assets/readme/              # 审核通过的 README 视觉资产
+```
+
+</details>
+
+值得一读的参考文件：[SKILL.md](SKILL.md) ·
+[section-library](references/section-library.md) ·
+[style-archetypes](references/style-archetypes.md) ·
+[decoration-toolkit](references/decoration-toolkit.md) ·
+[visual-composition](references/visual-composition.md) ·
+[visual-assets](references/visual-assets.md) ·
+[input-controls](references/input-controls.md) ·
+[presentation-recipes](references/presentation-recipes.md)。
+
+<a id="zh-getting-started"></a>
+
+## 🚀 快速开始
+
+从 [v0.1.0 Release](https://github.com/ChrysFu-FndVent/readme-architect/releases/tag/v0.1.0)
+下载与你的使用方式和系统对应的文件：
+
+| 用途 / 系统 | Release 文件 |
+|---|---|
+| Codex Skill | `readme-architect-skill-v0.1.0.zip` |
+| Linux x86_64 | `readme-architect-linux-x86_64` |
+| Linux ARM64 | `readme-architect-linux-aarch64` |
+| macOS Intel + Apple silicon | `readme-architect-macos-universal2` |
+| Windows x86_64 | `readme-architect-windows-x86_64.exe` |
+| 完整性校验 | `SHA256SUMS.txt` |
+
+### 安装 Codex Skill
+
+macOS / Linux：
+
+```bash
+unzip readme-architect-skill-v0.1.0.zip -d ~/.codex/skills
+```
+
+Windows PowerShell：
+
+```powershell
+Expand-Archive .\readme-architect-skill-v0.1.0.zip -DestinationPath "$HOME\.codex\skills"
+```
+
+### 运行离线 CLI
+
+macOS / Linux 下载后先添加执行权限：
+
+```bash
+chmod +x readme-architect-macos-universal2
+./readme-architect-macos-universal2 --version
+```
+
+Linux 用户把文件名替换为对应架构的 Linux 资产。Windows PowerShell 直接运行：
+
+```powershell
+.\readme-architect-windows-x86_64.exe --version
+```
+
+Release 可执行文件在 v0.1.0 中未进行开发者签名。校验 SHA-256 后，如 macOS Gatekeeper 或 Windows
+SmartScreen 拦截，请分别通过“隐私与安全性 → 仍要打开”或“更多信息 → 仍要运行”确认本次下载。
+
+以 macOS 资产为例校验下载文件：
+
+```bash
+grep '  readme-architect-macos-universal2$' SHA256SUMS.txt | shasum -a 256 -c -
+```
+
+也可以从源码安装 Python 命令：
+
+```bash
+python -m pip install .
+readme-architect --version
+```
+
+<a id="zh-usage"></a>
+
+## 💡 使用方法
+
+打开任意项目，对你的 agent 说：
+
+```text
+为这个项目生成一份 README。
+```
+
+技能会接管后续工作。离线 CLI 不调用模型、图像 API 或外部文档服务，默认只生成候选文件：
+
+| 命令 | 行为 |
+|---|---|
+| `readme-architect PATH` | 写入 `README.generated.md`，保留现有 `README.md` |
+| `readme-architect PATH --write` | 不询问，原子替换 `README.md` |
+| `readme-architect PATH --dry-run` | 只分析和校验，不写文件 |
+| `readme-architect PATH --diff` | 只输出与现有 `README.md` 的统一 diff |
+| `readme-architect PATH --suggest-only --json` | 输出基于证据的机器可读建议 |
+
+也可以直接运行技能的辅助脚本：
+
+```bash
+# 可选：排除不应作为 README 依据的路径
+cat > .readme-architectignore <<'EOF'
+internal/
+*.snapshot
+EOF
+
+# 1. 把仓库分析成结构化 profile
+python3 scripts/analyze_project.py --root . --out .readme-architect/profile.json
+
+# 2. 根据可核对的证据规划徽章和视觉预算
+python3 scripts/plan_readme_visuals.py \
+  --profile .readme-architect/profile.json \
+  --out .readme-architect/visual-plan.json
+
+# 3. 校验默认的中英双语 README
+python3 scripts/validate_readme.py --bilingual README.md
+
+# 4. 运行内置回归测试
+python3 -m unittest discover -s tests -v
+```
+
+> [!TIP]
+> 如果已存在一份实质性的手写 `README.md`，技能会写入 `README.generated.md` 而不会静默覆盖你的成果 ——
+> 除非你明确要求替换原文件。
+
+<p align="right"><a href="#readme-top">↑ 回到顶部</a></p>
+
+<a id="zh-requirements"></a>
+
+## 📋 环境要求
+
+- **Release 可执行文件无需 Python。** 从源码安装 CLI 或运行脚本需要 **Python 3.9+**；运行时只使用标准库。
+- **可选：** `drawio`、`nano-banana-pro`、`nano-banana-flash` 或 `generate-gpt-image-2` 技能用于视觉。
+  没有它们，README 依然能正常渲染（图表降级为 Mermaid）。
+- **任意系统。** 探测逻辑可跨 macOS / Linux / Windows 移植；运行
+  `python3 scripts/check_integrations.py` 即可查看本机可用能力。若你的技能装在其他位置，可用
+  `README_ARCHITECT_SKILL_ROOTS` 扩展技能搜索路径。
+
+<a id="zh-license"></a>
+
+## 📄 许可证
+
+基于 **MIT 许可证** 发布。详见 [`LICENSE`](LICENSE)。
+
+<a id="zh-acknowledgments"></a>
+
+## 🙏 致谢
+
+- [standard-readme](https://github.com/RichardLitt/standard-readme) —— 章节排序规范。
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) —— 居中项目开场区的排版灵感。
+- [Shields.io](https://shields.io) —— 徽章。
+- [Mermaid](https://mermaid.js.org) —— 可在 GitHub 原生渲染的图表。
