@@ -20,6 +20,11 @@ import os
 import shutil
 import sys
 
+try:
+    from scripts.console import configure_utf8_stdio
+except ModuleNotFoundError:
+    from console import configure_utf8_stdio
+
 # Default skill install roots, probed on any machine. Extend for other setups
 # via env: README_ARCHITECT_SKILL_ROOTS="/path/one:/path/two" (os.pathsep-separated).
 DEFAULT_SKILL_ROOTS = [
@@ -213,6 +218,7 @@ def print_human(report):
 
 
 def main():
+    configure_utf8_stdio()
     as_json = "--json" in sys.argv[1:]
     report = detect()
     if as_json:

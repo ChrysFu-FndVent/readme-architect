@@ -15,6 +15,7 @@ from pathlib import Path
 from readme_architect import __version__
 from readme_architect.renderer import build_suggestions, render_readme
 from scripts import analyze_project, plan_readme_visuals, validate_readme
+from scripts.console import configure_utf8_stdio
 
 
 def _atomic_write(path, content):
@@ -95,6 +96,7 @@ def _project_slug(profile):
 
 
 def main(argv=None):
+    configure_utf8_stdio()
     parser = _parser()
     args = parser.parse_args(argv)
     if args.json and not args.suggest_only:

@@ -16,6 +16,11 @@ import sys
 from pathlib import Path
 from typing import Optional, Set
 
+try:
+    from scripts.console import configure_utf8_stdio
+except ModuleNotFoundError:
+    from console import configure_utf8_stdio
+
 from analyze_project import (
     IMAGE_EXTENSIONS,
     MEDIA_DEPRIORITY_TERMS,
@@ -168,6 +173,7 @@ def unique_target(destination: Path, index: int, source: Path):
 
 
 def main(argv=None):
+    configure_utf8_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=".", help="project root")
     parser.add_argument("--dest", default="assets/readme/media", help="derived asset directory relative to root")

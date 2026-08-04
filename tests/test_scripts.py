@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import base64
+import os
 import subprocess
 import sys
 import tempfile
@@ -154,6 +155,7 @@ class AnalyzeProjectTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
                 check=False,
+                env={**os.environ, "PYTHONIOENCODING": "cp1252"},
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
@@ -175,6 +177,7 @@ class ValidateReadmeTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
                 check=False,
+                env={**os.environ, "PYTHONIOENCODING": "cp1252"},
             )
 
     def test_bilingual_contract_accepts_chinese_before_english(self):

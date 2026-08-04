@@ -15,6 +15,11 @@ import subprocess
 import sys
 from collections import Counter
 
+try:
+    from scripts.console import configure_utf8_stdio
+except ModuleNotFoundError:
+    from console import configure_utf8_stdio
+
 SKIP_DIRS = {
     ".git", "node_modules", ".venv", "venv", "env", "__pycache__", "dist",
     "build", "out", ".next", ".nuxt", "target", ".idea", ".vscode", "vendor",
@@ -542,6 +547,7 @@ def analyze(root):
 
 
 def main(argv=None):
+    configure_utf8_stdio()
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--out", default=None)

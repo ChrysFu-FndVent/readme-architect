@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 from pathlib import Path
 
@@ -19,7 +20,8 @@ def main(argv=None):
         parser.error(f"binary not found: {source}")
     output.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, output)
-    output.chmod(output.stat().st_mode | 0o111)
+    if os.name != "nt":
+        output.chmod(output.stat().st_mode | 0o111)
     print(output)
     return 0
 

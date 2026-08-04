@@ -11,6 +11,11 @@ import re
 import sys
 import argparse
 
+try:
+    from scripts.console import configure_utf8_stdio
+except ModuleNotFoundError:
+    from console import configure_utf8_stdio
+
 PLACEHOLDER_PATTERNS = [
     (re.compile(r"\bTODO\b"), "leftover TODO"),
     (re.compile(r"\bFIXME\b"), "leftover FIXME"),
@@ -53,6 +58,7 @@ def strip_code_blocks(lines):
 
 
 def main(argv=None):
+    configure_utf8_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bilingual", action="store_true",
                         help="enforce the default Chinese-first, English-second layout")

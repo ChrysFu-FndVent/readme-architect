@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import tempfile
 import unittest
 import zipfile
@@ -46,7 +47,8 @@ class StageBinaryTests(unittest.TestCase):
 
             self.assertEqual(result, 0)
             self.assertEqual(output.read_bytes(), b"binary")
-            self.assertTrue(output.stat().st_mode & 0o111)
+            if os.name != "nt":
+                self.assertTrue(output.stat().st_mode & 0o111)
 
 
 if __name__ == "__main__":

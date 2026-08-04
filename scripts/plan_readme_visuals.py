@@ -12,6 +12,11 @@ import os
 import sys
 from urllib.parse import quote
 
+try:
+    from scripts.console import configure_utf8_stdio
+except ModuleNotFoundError:
+    from console import configure_utf8_stdio
+
 
 SIGNAL_GLYPHS = {
     "friendly-experience": "🌿",
@@ -158,6 +163,7 @@ def plan(profile):
 
 
 def main(argv=None):
+    configure_utf8_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True, help="JSON profile from analyze_project.py")
     parser.add_argument("--out", help="optional JSON output path")
